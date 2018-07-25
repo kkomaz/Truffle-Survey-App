@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import setCountValue from '../../actions/Count/setCountValue';
 import contractDefinition from '../../contracts/SimpleStorage.json';
-import surveyFactoryContract from '../../contracts/SurveryFactory.json';
+import surveyFactoryContract from '../../contracts/SurveyFactory.json';
 import getContractInstance from '../../utils/getContractInstance';
 import './stylesheets/count.css';
 
