@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Route, NavLink, Switch, Prompt, BrowserRouter } from 'react-router-dom';
 import setWeb3 from './actions/Web3/setWeb3';
 import Count from './containers/Count';
-import './App.css';
+import './stylesheets/main.scss';
 
 const Contacts = (props) => {
   return (

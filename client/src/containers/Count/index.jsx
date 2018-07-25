@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import setCountValue from '../../actions/Count/setCountValue';
-import contractDefinition from '../../contracts/SimpleStorage.json';
+// import contractDefinition from '../../contracts/SimpleStorage.json';
 import surveyFactoryContract from '../../contracts/SurveyFactory.json';
 import getContractInstance from '../../utils/getContractInstance';
-import './stylesheets/count.css';
 
 class Count extends Component {
   static propTypes = {
-    setContractInstance: PropTypes.func.isRequired,
+    // setContractInstance: PropTypes.func.isRequired,
     setCountValue: PropTypes.func.isRequired,
     count: PropTypes.any.isRequired,
     web3: PropTypes.object.isRequired,
@@ -46,7 +45,7 @@ class Count extends Component {
 
     return (
       <div className="count">
-        <h1>Good to Go!</h1>
+        <h1 className="count-text">Good to Go!</h1>
         <p>Your Truffle Box is installed and ready.</p>
         <h2>Smart Contract Example</h2>
         <p>

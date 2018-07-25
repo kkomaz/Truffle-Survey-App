@@ -1,5 +1,5 @@
 const defaultState = {
-  count: 0
+  count: 0,
 };
 
 export default function countReducer(state = defaultState, action) {
@@ -7,7 +7,7 @@ export default function countReducer(state = defaultState, action) {
 
   switch (action.type) {
     case 'SET_COUNT_VALUE': {
-      return { ...state, count: payload }
+      return { ...state, count: payload };
     }
     default: {
       return state;
