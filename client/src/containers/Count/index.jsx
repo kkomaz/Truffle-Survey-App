@@ -6,6 +6,7 @@ import setCountValue from '../../actions/Count/setCountValue';
 // import contractDefinition from '../../contracts/SimpleStorage.json';
 import surveyFactoryContract from '../../contracts/SurveyFactory.json';
 import getContractInstance from '../../utils/getContractInstance';
+import { SET_CONTRACT_INSTANCE } from '../../actions/constants';
 
 class Count extends Component {
   static propTypes = {
@@ -19,7 +20,8 @@ class Count extends Component {
     try {
       const { web3 } = this.props;
 
-      // const result = await this.props.setContractInstance(web3, contractDefinition);
+      // const result =
+      // await this.props.setContractInstance(web3, contractDefinition, SET_CONTRACT_INSTANCE);
       const test = await getContractInstance(web3, surveyFactoryContract);
 
       console.log(test);

@@ -1,13 +1,13 @@
 import { SET_CONTRACT_INSTANCE } from '../constants';
 import getContractInstance from '../../utils/getContractInstance';
 
-const setContractInstance = (web3, contractDefinition) => {
+const setContractInstance = (web3, contractDefinition, action) => {
   return async (dispatch) => {
     try {
       const contract = await getContractInstance(web3, contractDefinition);
 
       dispatch({
-        type: SET_CONTRACT_INSTANCE,
+        type: action,
         payload: contract,
       });
 
@@ -15,7 +15,9 @@ const setContractInstance = (web3, contractDefinition) => {
         success: true,
       };
     } catch (error) {
-      return console.log(error);
+      return {
+        error,
+      };
     }
   };
 };

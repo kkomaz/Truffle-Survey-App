@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Route, NavLink, Switch, Prompt, BrowserRouter } from 'react-router-dom';
 import setWeb3 from './actions/Web3/setWeb3';
 import Count from './containers/Count';
+import Home from './containers/Home';
 import './stylesheets/main.scss';
 
 const Contacts = (props) => {
@@ -83,7 +84,10 @@ class App extends Component {
               path="/"
               render={() => <Count web3={web3} accounts={accounts} />}
             />
-            <Route path="/about" render={() => <h1>About</h1>} />
+            <Route
+              path="/about"
+              render={() => <Home web3={web3} accounts={accounts} />}
+            />
             <Route path="/contacts" component={Contacts} />
             <Route path="/form" component={Form} />
             <Route render={() => <h1>Page Not Found</h1>} />
