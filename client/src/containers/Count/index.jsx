@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import setCountValue from '../../actions/Count/setCountValue';
 import contractDefinition from '../../contracts/SimpleStorage.json';
+import surveyFactoryContract from '../../contracts/SurveryFactory.json';
+import getContractInstance from '../../utils/getContractInstance';
 import './stylesheets/count.css';
 
 class Count extends Component {
@@ -18,11 +20,14 @@ class Count extends Component {
     try {
       const { web3 } = this.props;
 
-      const result = await this.props.setContractInstance(web3, contractDefinition);
+      // const result = await this.props.setContractInstance(web3, contractDefinition);
+      const test = await getContractInstance(web3, surveyFactoryContract);
 
-      if (result.success) {
-        this.runExample();
-      }
+      console.log(test);
+
+      // if (result.success) {
+      //   this.runExample();
+      // }
     } catch (error) {
       console.log(error);
     }
