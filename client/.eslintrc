@@ -2,6 +2,7 @@
   "extends": "airbnb",
   "parser": "babel-eslint",
   "rules": {
+    "no-debugger": 1,
     "object-curly-newline": 0,
     "arrow-body-style": 1,
     "no-unused-vars": 1,

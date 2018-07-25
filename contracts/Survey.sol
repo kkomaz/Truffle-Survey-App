@@ -1,18 +1,5 @@
 pragma solidity ^0.4.24;
 
-contract SurveryFactory {
-    address[] public deployedSurveys;
-
-    function createSurvey() public {
-        address newSurvey = new Survey(msg.sender);
-        deployedSurveys.push(newSurvey);
-    }
-
-    function getDeployedSurveys() public view returns (address[]) {
-        return deployedSurveys;
-    }
-}
-
 contract Survey {
     struct Question {
         string ask;
