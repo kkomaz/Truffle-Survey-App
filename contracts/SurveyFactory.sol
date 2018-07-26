@@ -5,18 +5,21 @@ import './Survey.sol';
 contract SurveyFactory {
     address public owner;
     address[] public deployedSurveys;
-
-    event gettingDeployedSurveys(string response);
+    mapping(address => address[]) deployedSurveysByOwner;
 
     function createSurvey() public {
         owner = msg.sender;
         address newSurvey = new Survey(msg.sender);
+        deployedSurveysByOwner[msg.sender].push(newSurvey);
         deployedSurveys.push(newSurvey);
     }
 
-    function getDeployedSurveys() public returns (address[]) {
-        emit gettingDeployedSurveys('getting deployed surveys');
+    function getDeployedSurveys() public view returns (address[]) {
         return deployedSurveys;
+    }
+
+    function getDeployedSurveys(address _owner) public view returns (address[]) {
+        return deployedSurveysByOwner[_owner];
     }
 
     function getOwner() public view returns (address) {
