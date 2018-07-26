@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash-es';
+import Button from '@material-ui/core/Button';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import surveyFactoryContractJSON from '../../contracts/SurveyFactory.json';
 import getSurveys from '../../actions/Survey/getSurveys';
@@ -58,7 +59,14 @@ class Home extends Component {
     const { surveyIds } = this.props;
 
     if (isEmpty(surveyIds)) {
-      return <div>No Surveys created!</div>;
+      return (
+        <div>
+          <h1>No Surveys created!</h1>
+          <Button variant="contained" color="primary">
+            Primary
+          </Button>
+        </div>
+      );
     }
 
     return (
