@@ -5,6 +5,7 @@ import { Route, NavLink, Switch, Prompt, BrowserRouter } from 'react-router-dom'
 import setWeb3 from './actions/Web3/setWeb3';
 import Count from './containers/Count';
 import Home from './containers/Home';
+import SurveyRoute from './routes/SurveyRoute';
 import './stylesheets/main.scss';
 
 const Contacts = (props) => {
@@ -12,6 +13,7 @@ const Contacts = (props) => {
     <div>
       <Switch>
         <Route exact path={props.match.path} render={() => <h1>My Contacts Path</h1>} />
+        <Route path={`${props.match.path}/yoyo`} render={() => <h1>My Contacts Pathssss</h1>} />
         <Route path={`${props.match.path}/:contactId`} render={({ match }) => <h1>My Single Contact Path {match.params.contactId}</h1>} />
       </Switch>
     </div>
@@ -26,7 +28,7 @@ Contacts.propTypes = {
 const Links = () => (
   <nav>
     <NavLink exact activeClassName="active" to="/">Home</NavLink>
-    <NavLink activeStyle={{ color: 'green' }} to="/about">About</NavLink>
+    <NavLink activeStyle={{ color: 'green' }} to="/surveys">Surveys</NavLink>
     <NavLink activeClassName="active" to="/contacts">Contacts</NavLink>
     <NavLink activeStyle={{ color: 'black' }} to="/old/456">Old</NavLink>
     <NavLink activeStyle={{ color: 'black' }} to="/new/123">New</NavLink>
@@ -85,10 +87,11 @@ class App extends Component {
               render={() => <Count web3={web3} accounts={accounts} />}
             />
             <Route
-              path="/about"
-              render={() => <Home web3={web3} accounts={accounts} />}
+              path="/surveys"
+              render={({ match }) => <SurveyRoute match={match} web3={web3} accounts={accounts} />}
             />
             <Route path="/contacts" component={Contacts} />
+            <Route path="/surveys/create" render={() => <h1>Surveys Create</h1>} />
             <Route path="/form" component={Form} />
             <Route render={() => <h1>Page Not Found</h1>} />
           </Switch>

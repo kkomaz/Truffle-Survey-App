@@ -9,7 +9,7 @@ import surveyFactoryContractJSON from '../../contracts/SurveyFactory.json';
 import getSurveys from '../../actions/Survey/getSurveys';
 import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from '../../actions/constants';
 
-class Home extends Component {
+class Surveys extends Component {
   static propTypes = {
     setContractInstance: PropTypes.func.isRequired,
     web3: PropTypes.object.isRequired,
@@ -83,7 +83,7 @@ class Home extends Component {
   }
 }
 
-Home.defaultProps = {
+Surveys.defaultProps = {
   surveyFactoryContract: {},
 };
 
@@ -97,4 +97,4 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   setContractInstance,
   getSurveys,
-})(withRouter(Home));
+})(withRouter(Surveys));
