@@ -12,6 +12,11 @@ const getWeb3 = () => new Promise((resolve, reject) => {
     if (alreadyInjected) {
       // Use Mist/MetaMask's provider.
       web3 = new Web3(web3.currentProvider)
+
+      // web3 1.0 beta for ws ganache events //
+      // web3 = new Web3()
+      // const eventProvider = new Web3.providers.WebsocketProvider('ws://127.0.0.1:8545')
+      // web3.setProvider(eventProvider)
       console.log('Injected web3 detected.');
       resolve(web3)
     } else {
