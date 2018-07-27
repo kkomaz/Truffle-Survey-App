@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, NavLink, Switch, Prompt, BrowserRouter } from 'react-router-dom';
 import setWeb3 from './actions/Web3/setWeb3';
-import Count from './containers/Count';
+import Survey from './containers/Survey';
 import Home from './containers/Home';
 import SurveyRoute from './routes/SurveyRoute';
 import './stylesheets/main.scss';
@@ -84,7 +84,7 @@ class App extends Component {
             <Route
               exact
               path="/"
-              render={() => <Count web3={web3} accounts={accounts} />}
+              render={() => <Survey web3={web3} accounts={accounts} />}
             />
             <Route
               path="/surveys"
