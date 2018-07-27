@@ -1,4 +1,3 @@
-import { SET_CONTRACT_INSTANCE } from '../constants';
 import getContractInstance from '../../utils/getContractInstance';
 
 const setContractInstance = (web3, contractDefinition, action) => {

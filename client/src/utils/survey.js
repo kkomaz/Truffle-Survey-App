@@ -1,9 +1,7 @@
 import Survey from '../contracts/Survey.json';
 
 export default (address, web3) => {
-  debugger;
-  return new web3.eth.Contract(
-    JSON.parse(Survey.interface),
-    address,
-  );
+  const myContract = new web3.eth.Contract(Survey.abi, address);
+
+  return myContract;
 };

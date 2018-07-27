@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import surveyFactoryContractJSON from '../../contracts/SurveyFactory.json';
 import getSurveys from '../../actions/Survey/getSurveys';
+import createSurvey from '../../actions/Survey/createSurvey';
 import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from '../../actions/constants';
 import Survey from '../../utils/survey';
 
@@ -17,7 +18,8 @@ class Surveys extends Component {
     surveyFactoryContract: PropTypes.object,
     surveyIds: PropTypes.array.isRequired,
     getSurveys: PropTypes.func.isRequired,
-    // history: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    createSurvey: PropTypes.func.isRequired,
   }
 
   componentDidMount = async () => {
@@ -25,7 +27,6 @@ class Surveys extends Component {
       const { web3 } = this.props;
 
       const result = await this.props.setContractInstance(web3, surveyFactoryContractJSON, SET_SURVEY_FACTORY_CONTRACT_INSTANCE);
-
       if (result.success) {
         this.getSurveys();
       }
@@ -42,25 +43,11 @@ class Surveys extends Component {
 
   createSurvey = async () => {
     const { surveyFactoryContract, accounts } = this.props;
-    try {
-      console.log('creating survey');
-      await surveyFactoryContract.methods
-        .createSurvey()
-        .send({
-          from: accounts[0],
-        })
-        .on('receipt', (receipt) => {
-          console.log(receipt.contractAddress); // contains the new contract address
-        })
-        .on('confirmation', () => {
-          console.log('confirming');
-        })
-        .then((newContractInstance) => {
-          console.log(newContractInstance);
-        });
-      console.log('ending');
-    } catch (err) {
-      console.log(err);
+
+    const result = await this.props.createSurvey(surveyFactoryContract, accounts);
+
+    if (result.success) {
+      this.props.history.push(`/surveys/${result.address}`);
     }
   }
 
@@ -128,4 +115,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   setContractInstance,
   getSurveys,
+  createSurvey,
 })(withRouter(Surveys));
