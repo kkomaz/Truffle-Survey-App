@@ -13,7 +13,7 @@ const SurveyRoute = (props) => {
           path={props.match.path}
           render={() => <Survey web3={props.web3} accounts={props.accounts} />}
         />
-        <Route path="/surveys/:survey_id" render={() => <SurveyCreate />} />
+        <Route path="/surveys/:survey_id/create" render={() => <SurveyCreate />} />
       </Switch>
     </div>
   );

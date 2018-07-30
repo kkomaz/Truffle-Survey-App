@@ -37,6 +37,79 @@ contract Survey {
         return true;
     }
 
+    function createQuestion(string _ask1, string _ask2) public returns (bool) {
+        string[] memory a = new string[](2);
+        a[0] = _ask1;
+        a[1] = _ask2;
+
+        for (uint i = 0; i < 2; i++) {
+            Question memory newQuestion = Question({
+                ask:  a[i],
+                yes: 0,
+                no: 0
+            });
+            questions[questionCount] = newQuestion;
+            questionCount++;
+        }
+
+        return true;
+    }
+
+    function createQuestion(string _ask1, string _ask2, string _ask3) public returns (bool) {
+        string[] memory a = new string[](3);
+        a[0] = _ask1;
+        a[1] = _ask2;
+        a[2] = _ask3;
+
+        for (uint i = 0; i < 3; i++) {
+            Question memory newQuestion = Question({
+                ask:  a[i],
+                yes: 0,
+                no: 0
+            });
+            questions[questionCount] = newQuestion;
+            questionCount++;
+        }
+
+        return true;
+    }
+
+    function createQuestion(string _ask1, string _ask2, string _ask3, string _ask4) public returns (bool) {
+        string[] memory a = new string[](4);
+        a[0] = _ask1;
+        a[1] = _ask2;
+        a[2] = _ask3;
+        a[3] = _ask4;
+
+        for (uint i = 0; i < 4; i++) {
+            Question memory newQuestion = Question({
+                ask:  a[i],
+                yes: 0,
+                no: 0
+            });
+            questions[questionCount] = newQuestion;
+            questionCount++;
+        }
+
+        return true;
+    }
+
+    function returnAllQuestions(uint _index) public view returns (string) {
+        return (questions[_index].ask);
+    }
+
+    function returnAllQuestions(uint _index, uint _index1) public view returns (string, string) {
+        return (questions[_index].ask, questions[_index1].ask);
+    }
+
+    function returnAllQuestions(uint _index, uint _index1, uint _index2) public view returns (string, string, string) {
+        return (questions[_index].ask, questions[_index1].ask, questions[_index2].ask);
+    }
+
+    function returnAllQuestions(uint _index, uint _index1, uint _index2, uint _index3) public view returns (string, string, string, string) {
+        return (questions[_index].ask, questions[_index1].ask, questions[_index2].ask, questions[_index3].ask);
+    }
+
     function getResult(uint index, bool result) public view returns (uint) {
         if (result) {
             return questions[index].yes;
@@ -45,8 +118,14 @@ contract Survey {
         return questions[index].no;
     }
 
-    function getQuestion(uint index) public view returns (string) {
-        return questions[index].ask;
+    function getResults() public view returns (uint[]) {
+        uint[] memory a = new uint[](questionCount);
+        for (uint i = 0; i < questionCount; i++) {
+            a[0] = a[0] + questions[i].yes;
+            a[1] = a[1] + questions[i].no;
+        }
+
+        return a;
     }
 
     function getParticipant() view public returns (bool) {
