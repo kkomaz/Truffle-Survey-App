@@ -18,12 +18,95 @@ contract Survey {
     // Record to keep track of question, partcipant, and balance distribution
     mapping(address => bool) participants;
     uint public questionCount;
-    uint public partcipantCount;
+    uint public participantCount;
     uint public distributeAmount;
 
     constructor(address _owner) public {
         owner = _owner;
     }
+
+    function getQuestionCount() public returns (uint) {
+      return questionCount;
+    }
+
+    function getParticipantCount() public returns (uint) {
+      return participantCount;
+    }
+
+    function distributeAmount() public returns (uint) {
+      return distributeAmount;
+    }
+
+    function getQuestionLimit() public returns (uint) {
+      return participantCount;
+    }
+
+    function getSurveyRequiredCount() public returns (uint) {
+      return surveyRequiredCount;
+    }
+
+    function getResults() public view returns (uint[]) {
+        uint[] memory a = new uint[](questionCount);
+        for (uint i = 0; i < questionCount; i++) {
+            a[0] = a[0] + questions[i].yes;
+            a[1] = a[1] + questions[i].no;
+        }
+
+        return a;
+    }
+
+    function getParticipant() view public returns (bool) {
+        return participants[msg.sender];
+    }
+
+    function giveAnswer(uint _index, bool _answer) public returns (bool) {
+        Question storage currentQuestion = questions[_index];
+
+        if (_answer) {
+            currentQuestion.yes += 1;
+        } else {
+            currentQuestion.no += 1;
+        }
+
+        if (_index == questionCount) {
+            participants[msg.sender] = true;
+            participantCount++;
+        }
+
+        return true;
+    }
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+
+    function getRemainingSurveyCount() public view returns (uint) {
+        return surveyRequiredCount - participantCount;
+    }
+
+    function depositRewardAmount() public payable {
+        require(msg.sender == owner);
+
+        distributeAmount = msg.value / surveyRequiredCount;
+    }
+
+    function payoutParticipant() public returns (bool) {
+        require(participantCount == surveyRequiredCount);
+        if (participants[msg.sender]) {
+            participants[msg.sender] = false;
+
+            if (!msg.sender.send(distributeAmount)) {
+                participants[msg.sender] = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // Overloaded Functions
 
     function createQuestion(string _ask) public returns (bool) {
         Question memory newQuestion = Question({
@@ -108,74 +191,5 @@ contract Survey {
 
     function returnAllQuestions(uint _index, uint _index1, uint _index2, uint _index3) public view returns (string, string, string, string) {
         return (questions[_index].ask, questions[_index1].ask, questions[_index2].ask, questions[_index3].ask);
-    }
-
-    function getResult(uint index, bool result) public view returns (uint) {
-        if (result) {
-            return questions[index].yes;
-        }
-
-        return questions[index].no;
-    }
-
-    function getResults() public view returns (uint[]) {
-        uint[] memory a = new uint[](questionCount);
-        for (uint i = 0; i < questionCount; i++) {
-            a[0] = a[0] + questions[i].yes;
-            a[1] = a[1] + questions[i].no;
-        }
-
-        return a;
-    }
-
-    function getParticipant() view public returns (bool) {
-        return participants[msg.sender];
-    }
-
-    function giveAnswer(uint _index, bool _answer) public returns (bool) {
-        Question storage currentQuestion = questions[_index];
-
-        if (_answer) {
-            currentQuestion.yes += 1;
-        } else {
-            currentQuestion.no += 1;
-        }
-
-        if (_index == questionCount) {
-            participants[msg.sender] = true;
-            partcipantCount++;
-        }
-
-        return true;
-    }
-
-    function getBalance() public view returns (uint) {
-        return address(this).balance;
-    }
-
-    function getRemainingSurveyCount() public view returns (uint) {
-        return surveyRequiredCount - partcipantCount;
-    }
-
-    function depositRewardAmount() public payable {
-        require(msg.sender == owner);
-
-        distributeAmount = msg.value / surveyRequiredCount;
-    }
-
-    function payoutParticipant() public returns (bool) {
-        require(partcipantCount == surveyRequiredCount);
-        if (participants[msg.sender]) {
-            participants[msg.sender] = false;
-
-            if (!msg.sender.send(distributeAmount)) {
-                participants[msg.sender] = true;
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 }
