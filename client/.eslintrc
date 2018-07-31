@@ -8,6 +8,8 @@
     "no-unused-vars": 1,
     "max-len": 0,
     "operator-linebreak": 0,
+    "camelcase": 0,
+    "no-class-assign": 0,
     "jsx-a11y/label-has-for": 0,
     "react/jsx-one-expression-per-line": 0,
     "react/destructuring-assignment": 0,

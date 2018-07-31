@@ -13,7 +13,10 @@ const SurveyRoute = (props) => {
           path={props.match.path}
           render={() => <Survey web3={props.web3} accounts={props.accounts} />}
         />
-        <Route path="/surveys/:survey_id/create" render={() => <SurveyCreateQuestions />} />
+        <Route
+          path="/surveys/:survey_id/create"
+          render={({ match }) => <SurveyCreateQuestions web3={props.web3} accounts={props.accounts} match={match} />}
+        />
       </Switch>
     </div>
   );
@@ -22,7 +25,7 @@ const SurveyRoute = (props) => {
 SurveyRoute.propTypes = {
   match: PropTypes.object.isRequired,
   web3: PropTypes.object.isRequired,
-  accounts: PropTypes.object.isRequired,
+  accounts: PropTypes.array.isRequired,
 };
 
 export default SurveyRoute;
