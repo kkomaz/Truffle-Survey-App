@@ -1,0 +1,9 @@
+.survey-questions {
+  &__item {
+    display: flex;
+  }
+
+  &__question-input {
+    margin-right: 10px;
+  }
+}
