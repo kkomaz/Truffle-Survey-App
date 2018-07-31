@@ -21,7 +21,7 @@ class CreateSurveyQuestions extends Component {
   componentDidMount = async () => {
     const { web3, surveyId } = this.props;
 
-    await this.props.getSurvey(surveyId, web3);
+    // await this.props.getSurvey(surveyId, web3);
   }
 
   onSubmit = async (values) => {
@@ -47,6 +47,8 @@ class CreateSurveyQuestions extends Component {
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
+
+    console.log(this.props.surveyContract);
 
     return (
       <form onSubmit={handleSubmit(this.onSubmit)}>

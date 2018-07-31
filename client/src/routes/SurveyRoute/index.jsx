@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Survey from '../../containers/Survey';
 import SurveyCreateQuestions from '../../containers/Survey/SurveyCreateQuestions';
+import SurveyWrapper from '../../containers/Survey/SurveyWrapper';
 
 const SurveyRoute = (props) => {
   return (
@@ -14,6 +15,12 @@ const SurveyRoute = (props) => {
           render={() => <Survey web3={props.web3} accounts={props.accounts} />}
         />
         <Route
+          exact
+          path="/surveys/:survey_id"
+          render={({ match }) => <SurveyWrapper web3={props.web3} accounts={props.accounts} match={match} />}
+        />
+        <Route
+          exact
           path="/surveys/:survey_id/create"
           render={({ match }) => <SurveyCreateQuestions web3={props.web3} accounts={props.accounts} match={match} />}
         />
