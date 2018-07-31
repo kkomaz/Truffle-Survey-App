@@ -12,16 +12,8 @@ class CreateSurveyQuestions extends Component {
     pristine: PropTypes.bool.isRequired,
     reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
-    surveyId: PropTypes.string.isRequired,
-    web3: PropTypes.object.isRequired,
     surveyContract: PropTypes.object,
     accounts: PropTypes.array.isRequired,
-  }
-
-  componentDidMount = async () => {
-    const { web3, surveyId } = this.props;
-
-    // await this.props.getSurvey(surveyId, web3);
   }
 
   onSubmit = async (values) => {
