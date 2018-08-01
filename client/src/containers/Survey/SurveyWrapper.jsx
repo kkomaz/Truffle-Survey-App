@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash-es';
 import { Route, Switch } from 'react-router-dom';
 import getSurvey from '../../actions/Survey/getSurvey';
 import SurveyCreateQuestions from './SurveyCreateQuestions';
+import SurveyShow from './SurveyShow';
 
 class SurveyWrapper extends Component {
   static propTypes = {
@@ -12,38 +13,46 @@ class SurveyWrapper extends Component {
     web3: PropTypes.object.isRequired,
     surveyContract: PropTypes.object,
     accounts: PropTypes.array.isRequired,
+    surveyId: PropTypes.string.isRequired,
   };
 
   componentDidMount = async () => {
     const { web3, surveyId } = this.props;
 
     await this.props.getSurvey(surveyId, web3);
-  }
+  };
 
   render() {
-    const { web3, accounts } = this.props;
+    const { web3, accounts, surveyContract, surveyId } = this.props;
 
-    if (isEmpty(this.props.surveyContract)) {
+    if (isEmpty(surveyContract)) {
       return <div>Pending...</div>;
     }
 
     return (
       <div>
-        Hello World
         <Switch>
           <Route
             exact
-            path="/surveys/:survey_id"
-            render={() => <h1>Hello World</h1>}
+            path="/surveys/:survey_id/show"
+            render={() => (
+              <SurveyShow
+                web3={web3}
+                accounts={accounts}
+                surveyContract={surveyContract}
+                surveyId={surveyId}
+              />
+            )}
           />
           <Route
             exact
             path="/surveys/:survey_id/create"
-            render={({ match }) => (
+            render={() => (
               <SurveyCreateQuestions
                 web3={web3}
                 accounts={accounts}
-                match={match}
+                surveyContract={surveyContract}
+                surveyId={surveyId}
               />
             )}
           />
@@ -66,6 +75,9 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps, {
-  getSurvey,
-})(SurveyWrapper);
+export default connect(
+  mapStateToProps,
+  {
+    getSurvey,
+  },
+)(SurveyWrapper);

@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Route, NavLink, Switch, Prompt, BrowserRouter } from 'react-router-dom';
 import setWeb3 from './actions/Web3/setWeb3';
 import Survey from './containers/Survey';
+import SurveyWrapper from './containers/Survey/SurveyWrapper';
 import Home from './containers/Home';
-import SurveyRoute from './routes/SurveyRoute';
 import './stylesheets/main.scss';
 
 const Contacts = (props) => {
@@ -87,8 +87,13 @@ class App extends Component {
               render={() => <Survey web3={web3} accounts={accounts} />}
             />
             <Route
+              exact
               path="/surveys"
-              render={({ match }) => <SurveyRoute match={match} web3={web3} accounts={accounts} />}
+              render={() => <Survey web3={web3} accounts={accounts} />}
+            />
+            <Route
+              path="/surveys/:survey_id"
+              render={({ match }) => <SurveyWrapper web3={web3} accounts={accounts} match={match} />}
             />
             <Route path="/contacts" component={Contacts} />
             <Route path="/surveys/create" render={() => <h1>Surveys Create</h1>} />
