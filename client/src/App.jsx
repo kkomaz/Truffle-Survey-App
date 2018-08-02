@@ -78,7 +78,7 @@ class App extends Component {
 
     return (
       <BrowserRouter>
-        <div>
+        <div style={{ marginBottom: '20px' }}>
           <Links />
           <Switch>
             <Route

@@ -76,7 +76,7 @@ class Surveys extends Component {
     }
 
     return (
-      <div>
+      <div className="container">
         <Button
           variant="contained"
           color="primary"

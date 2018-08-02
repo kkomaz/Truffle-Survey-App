@@ -103,7 +103,8 @@
       "jsx",
       "node",
       "mjs"
-    ]
+    ],
+    "moduleDirectories": ["node_modules", "src"]
   },
   "babel": {
     "presets": [
