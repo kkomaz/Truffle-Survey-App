@@ -14,6 +14,7 @@ class SurveyWrapper extends Component {
     surveyContract: PropTypes.object,
     accounts: PropTypes.array.isRequired,
     surveyId: PropTypes.string.isRequired,
+    account: PropTypes.object,
   };
 
   componentDidMount = async () => {
@@ -23,7 +24,7 @@ class SurveyWrapper extends Component {
   };
 
   render() {
-    const { web3, accounts, surveyContract, surveyId } = this.props;
+    const { web3, accounts, surveyContract, surveyId, account } = this.props;
 
     if (isEmpty(surveyContract)) {
       return <div>Pending...</div>;
@@ -41,6 +42,7 @@ class SurveyWrapper extends Component {
                 accounts={accounts}
                 surveyContract={surveyContract}
                 surveyId={surveyId}
+                account={account}
               />
             )}
           />
@@ -64,6 +66,7 @@ class SurveyWrapper extends Component {
 
 SurveyWrapper.defaultProps = {
   surveyContract: {},
+  account: {},
 };
 
 function mapStateToProps(state, ownProps) {
@@ -72,6 +75,7 @@ function mapStateToProps(state, ownProps) {
   return {
     surveyId,
     surveyContract: state.survey[surveyId],
+    account: state.web3.accounts[0],
   };
 }
 

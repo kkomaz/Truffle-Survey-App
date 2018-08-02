@@ -33,8 +33,6 @@ class CreateSurveyQuestions extends Component {
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
 
-    console.log(this.props);
-
     return (
       <div className="survey-create-questions container">
         <Card>

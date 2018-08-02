@@ -9,6 +9,10 @@
 
 @import './modules/surveys/surveys';
 
+ul {
+  list-style-type: none;
+}
+
 .danger {
   color: $danger-color;
 }

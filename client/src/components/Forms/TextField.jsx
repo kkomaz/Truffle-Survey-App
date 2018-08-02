@@ -21,7 +21,6 @@ const renderTextField = (props) => {
           placeholder={label}
           multiline
           rows={2}
-          rowsMax={4}
           fullWidth={props.fullWidth}
         />
         {touched && error && <span className="danger">{error}</span>}

@@ -12,7 +12,7 @@ export default function web3Reducer(state = defaultState, action) {
       return { ...state, loading: true };
     }
     case 'SET_WEB3': {
-      return { ...state, web3: payload, accounts: action.accounts };
+      return { ...state, web3: payload, accounts: action.accounts, currentAccount: action.accounts[0] };
     }
     default: {
       return state;

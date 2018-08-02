@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Card, CardHeader } from 'components';
+import SimpleList from 'components/Display/SimpleList';
 import { map, range } from 'lodash-es';
+import SurveyShowDisplay from './SurveyShowDisplay';
 
 class SurveyShow extends Component {
   state = { questions: [] };
@@ -10,30 +13,28 @@ class SurveyShow extends Component {
     const questionCount = await surveyContract.methods.getQuestionCount().call();
     const rangeQuestionCount = range(questionCount);
 
-    const result = await surveyContract.methods.returnAllQuestions(...rangeQuestionCount).call();
-    const questions = Object.values(result);
+    const allQuestions = await surveyContract.methods.returnAllQuestions(...rangeQuestionCount).call();
+    const questions = Object.values(allQuestions);
+
+    const enrolled = await surveyContract.methods.getParticipant().call();
 
     this.setState({
       questions,
       questionCount,
+      enrolled,
     });
   }
 
   render() {
-    const { questions, questionCount } = this.state;
+    const { questions, questionCount, enrolled } = this.state;
 
     return (
-      <div className="survey-show">
-        <h3>{questionCount}</h3>
-        <ul>
-          {
-            map(questions, (q, index) => {
-              return (
-                <li key={index}>{q}</li>
-              );
-            })
-          }
-        </ul>
+      <div className="survey-show container">
+        <Card>
+          <CardHeader title="Survey" subheader="secondary" />
+          <h3>{questionCount}</h3>
+          <SimpleList items={questions} />
+        </Card>
       </div>
     );
   }

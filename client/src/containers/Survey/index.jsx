@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map } from 'lodash-es';
 import Button from '@material-ui/core/Button';
+import { List, ListItem, ListItemText, ListItemIcon } from 'components';
+import InboxIcon from '@material-ui/icons/Inbox';
 import { withRouter } from 'react-router-dom';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import surveyFactoryContractJSON from '../../contracts/SurveyFactory.json';
 import getSurveys from '../../actions/Survey/getSurveys';
 import createSurvey from '../../actions/Survey/createSurvey';
 import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from '../../actions/constants';
-import Survey from '../../utils/survey';
 
 class Surveys extends Component {
   static propTypes = {
@@ -35,6 +36,10 @@ class Surveys extends Component {
     }
   }
 
+  onSurveyClick = (id) => {
+    this.props.history.push(`/surveys/${id}/show`);
+  }
+
   getSurveys = async () => {
     const { surveyFactoryContract, accounts } = this.props;
 
@@ -49,12 +54,6 @@ class Surveys extends Component {
     if (result.success) {
       this.props.history.push(`/surveys/${result.address}`);
     }
-  }
-
-  doIt = () => {
-    const { web3 } = this.props;
-    const survey = Survey('0xA0cC5B15fbE7C30D761b42476eF0e485Ff325827', web3);
-    console.log(survey);
   }
 
   render() {
@@ -84,18 +83,23 @@ class Surveys extends Component {
         >
           Create Survey
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.doIt}
-        >
-          Testing
-        </Button>
-        {
-          map(surveyIds, (id) => {
-            return <li key={id}>{id}</li>;
-          })
-        }
+        <List>
+          {
+            map(surveyIds, id => (
+              <ListItem
+                button
+                onClick={() => this.onSurveyClick(id)}
+              >
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={id}
+                />
+              </ListItem>
+            ))
+          }
+        </List>
       </div>
     );
   }
