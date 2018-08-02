@@ -24,7 +24,7 @@ const renderTextField = (props) => {
           rowsMax={4}
           fullWidth={props.fullWidth}
         />
-        {touched && error && <span>{error}</span>}
+        {touched && error && <span className="danger">{error}</span>}
       </div>
     </div>
   );
