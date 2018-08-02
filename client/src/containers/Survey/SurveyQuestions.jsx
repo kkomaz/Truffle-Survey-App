@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import { Field } from 'redux-form';
-import TextField from '../../components/Forms/TextField';
+import { Button } from 'components';
+import TextField from 'components/Forms/TextField';
 
 class SurveyQuestions extends Component {
   static propTypes = {
@@ -20,18 +20,17 @@ class SurveyQuestions extends Component {
       <div className="survey-questions">
         <div className="survey-questions__buttons">
           <Button
-            variant="contained"
+            text="Add Question"
             color="primary"
             onClick={() => fields.push()}
-          >
-            Add Question
-          </Button>
+            disabled={fields.length === 4}
+          />
         </div>
         <ul className="survey-questions__list">
           {
             fields.map((question, index) => (
               <li
-                className="survey-questions__item"
+                className="survey-questions__item mb-one"
                 key={index}
               >
                 <Field
@@ -45,12 +44,10 @@ class SurveyQuestions extends Component {
                   rowsMax={4}
                 />
                 <Button
-                  variant="contained"
-                  color="secondary"
+                  text="Remove Question"
+                  danger
                   onClick={() => fields.remove(index)}
-                >
-                  Remove Question
-                </Button>
+                />
               </li>
             ))
           }

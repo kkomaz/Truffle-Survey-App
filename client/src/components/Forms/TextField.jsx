@@ -22,6 +22,7 @@ const renderTextField = (props) => {
           multiline
           rows={2}
           rowsMax={4}
+          fullWidth={props.fullWidth}
         />
         {touched && error && <span>{error}</span>}
       </div>
@@ -36,9 +37,11 @@ renderTextField.propTypes = {
   meta: PropTypes.object.isRequired,
   hideLabel: PropTypes.bool,
   className: PropTypes.string,
+  fullWidth: PropTypes.bool,
 };
 
 renderTextField.defaultProps = {
+  fullWidth: true,
   hideLabel: false,
   className: 'al-textfield',
 };

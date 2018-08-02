@@ -5,5 +5,13 @@
 
   &__question-input {
     margin-right: 10px;
+    flex: 0 1 70%;
+  }
+}
+
+.survey-create-questions {
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
   }
 }
