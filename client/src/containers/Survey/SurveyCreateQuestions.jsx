@@ -12,18 +12,25 @@ class CreateSurveyQuestions extends Component {
     reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     surveyContract: PropTypes.object.isRequired,
-    accounts: PropTypes.array.isRequired,
     history: PropTypes.object.isRequired,
+    accountId: PropTypes.string.isRequired,
+    surveyFactoryContract: PropTypes.object.isRequired,
   };
 
   onSubmit = async (values) => {
-    const { surveyContract, accounts } = this.props;
+    const { surveyContract, accountId, surveyFactoryContract } = this.props;
     const { questions } = values;
-    const result = await surveyContract.methods
+    await surveyContract.methods
       .createQuestion(...questions)
       .send({
-        from: accounts[0],
+        from: accountId,
       });
+
+    const lastSurvey = await surveyFactoryContract.methods.getLastSurvey(accountId).call();
+
+    if (lastSurvey) {
+      this.props.history.push(`/surveys/${lastSurvey}/show`);
+    }
   };
 
   onCancelClick = () => {

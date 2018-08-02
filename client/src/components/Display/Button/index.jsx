@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import { omit } from 'lodash-es';
 import { dangerColor, whiteColor } from 'components/Colors';
 
 const style = {
@@ -14,10 +15,12 @@ const style = {
 };
 
 export const ButtonUI = (props) => {
+  const buttonProps = omit(props, 'danger');
+
   if (props.danger) {
     return (
       <Button
-        {...props}
+        {...buttonProps}
         variant="contained"
         style={{ ...style.danger, ...style.general }}
       >
@@ -27,7 +30,7 @@ export const ButtonUI = (props) => {
   }
   return (
     <Button
-      {...props}
+      {...buttonProps}
       variant="contained"
       style={style.general}
     >
@@ -37,12 +40,13 @@ export const ButtonUI = (props) => {
 };
 
 ButtonUI.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object,
   danger: PropTypes.bool,
-  text: PropTypes.bool.isRequired,
+  text: PropTypes.string.isRequired,
 };
 
 ButtonUI.defaultProps = {
+  classes: {},
   danger: false,
 };
 

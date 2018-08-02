@@ -11,6 +11,7 @@ import {
 import setWeb3 from './actions/Web3/setWeb3';
 import Survey from './containers/Survey';
 import SurveyWrapper from './containers/Survey/SurveyWrapper';
+import SurveysWrapper from './containers/Survey/SurveysWrapper';
 import Home from './containers/Home';
 import './stylesheets/main.scss';
 
@@ -112,12 +113,12 @@ class App extends Component {
             <Route
               exact
               path="/"
-              render={() => <Survey web3={web3} accounts={accounts} />}
+              render={() => <SurveysWrapper web3={web3} accounts={accounts} />}
             />
             <Route
               exact
               path="/surveys"
-              render={() => <Survey web3={web3} accounts={accounts} />}
+              render={() => <SurveysWrapper web3={web3} accounts={accounts} />}
             />
             <Route
               path="/surveys/:survey_id"

@@ -14,8 +14,6 @@ import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from '../../actions/constants';
 
 class Surveys extends Component {
   static propTypes = {
-    setContractInstance: PropTypes.func.isRequired,
-    web3: PropTypes.object.isRequired,
     surveyFactoryContract: PropTypes.object,
     surveyIds: PropTypes.array.isRequired,
     getSurveys: PropTypes.func.isRequired,
@@ -24,16 +22,7 @@ class Surveys extends Component {
   }
 
   componentDidMount = async () => {
-    try {
-      const { web3 } = this.props;
-
-      const result = await this.props.setContractInstance(web3, surveyFactoryContractJSON, SET_SURVEY_FACTORY_CONTRACT_INSTANCE);
-      if (result.success) {
-        this.getSurveys();
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    this.getSurveys();
   }
 
   onSurveyClick = (id) => {
@@ -85,8 +74,9 @@ class Surveys extends Component {
         </Button>
         <List>
           {
-            map(surveyIds, id => (
+            map(surveyIds, (id, index) => (
               <ListItem
+                key={index}
                 button
                 onClick={() => this.onSurveyClick(id)}
               >

@@ -25,24 +25,28 @@ contract Survey {
         owner = _owner;
     }
 
-    function getQuestionCount() public returns (uint) {
+    function getQuestionCount() public view returns (uint) {
       return questionCount;
     }
 
-    function getParticipantCount() public returns (uint) {
+    function getParticipantCount() public view returns (uint) {
       return participantCount;
     }
 
-    function distributeAmount() public returns (uint) {
+    function distributeAmount() public view returns (uint) {
       return distributeAmount;
     }
 
-    function getQuestionLimit() public returns (uint) {
+    function getQuestionLimit() public view returns (uint) {
       return participantCount;
     }
 
-    function getSurveyRequiredCount() public returns (uint) {
+    function getSurveyRequiredCount() public pure returns (uint) {
       return surveyRequiredCount;
+    }
+
+    function getOwner() public view returns (address) {
+      return owner;
     }
 
     function getResults() public view returns (uint[]) {
