@@ -20,8 +20,9 @@ const createSurvey = (contract, accounts) => {
         success: true,
         address: result,
       };
-    } catch (err) {
-      return { err };
+    } catch (error) {
+      // Dispatch Notifier
+      throw error;
     }
   };
 };

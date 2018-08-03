@@ -6,6 +6,7 @@ import setContractInstance from 'actions/Contract/setContractInstance';
 import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from 'actions/constants';
 import surveyFactoryContractJSON from 'contracts/SurveyFactory.json';
 import Survey from './index';
+import SurveyWrapper from './SurveyWrapper';
 
 class SurveysWrapper extends Component {
   static propTypes = {
@@ -56,6 +57,12 @@ class SurveysWrapper extends Component {
             path="/surveys"
             render={() => <Survey web3={web3} accounts={accounts} accountId={accountId} />}
           />
+          <Route
+            path="/surveys/:survey_id"
+            render={({ match }) => (
+              <SurveyWrapper web3={web3} accounts={accounts} match={match} />
+            )}
+          />
         </Switch>
       </div>
     );
@@ -64,7 +71,7 @@ class SurveysWrapper extends Component {
 
 function mapStateToProps(state) {
   return {
-    accountId: state.web3.accounts[0],
+    accountId: state.web3.currentAccount,
     surveyFactoryContract: state.contract.surveyFactoryContract,
     surveyIds: state.survey.ids,
   };

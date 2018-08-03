@@ -5,41 +5,12 @@ import {
   Route,
   NavLink,
   Switch,
-  Prompt,
   BrowserRouter,
 } from 'react-router-dom';
 import setWeb3 from './actions/Web3/setWeb3';
-import Survey from './containers/Survey';
 import SurveyWrapper from './containers/Survey/SurveyWrapper';
 import SurveysWrapper from './containers/Survey/SurveysWrapper';
-import Home from './containers/Home';
 import './stylesheets/main.scss';
-
-const Contacts = props => (
-  <div>
-    <Switch>
-      <Route
-        exact
-        path={props.match.path}
-        render={() => <h1>My Contacts Path</h1>}
-      />
-      <Route
-        path={`${props.match.path}/yoyo`}
-        render={() => <h1>My Contacts Pathssss</h1>}
-      />
-      <Route
-        path={`${props.match.path}/:contactId`}
-        render={({ match }) => (
-          <h1>My Single Contact Path {match.params.contactId}</h1>
-        )}
-      />
-    </Switch>
-  </div>
-);
-
-Contacts.propTypes = {
-  match: PropTypes.shape.isRequired,
-};
 
 // NavLink - allows you to identify a current route and determine active state
 const Links = () => (
@@ -64,22 +35,6 @@ const Links = () => (
     </NavLink>
   </nav>
 );
-
-class Form extends Component {
-  state = { dirty: false };
-
-  setDirty = () => this.setState({ dirty: true });
-
-  render() {
-    return (
-      <div>
-        <h1>Form</h1>
-        <input type="text" onInput={this.setDirty} />
-        <Prompt when={this.state.dirty} message="Data will be lost" />
-      </div>
-    );
-  }
-}
 
 class App extends Component {
   static propTypes = {
@@ -116,22 +71,9 @@ class App extends Component {
               render={() => <SurveysWrapper web3={web3} accounts={accounts} />}
             />
             <Route
-              exact
               path="/surveys"
               render={() => <SurveysWrapper web3={web3} accounts={accounts} />}
             />
-            <Route
-              path="/surveys/:survey_id"
-              render={({ match }) => (
-                <SurveyWrapper web3={web3} accounts={accounts} match={match} />
-              )}
-            />
-            <Route path="/contacts" component={Contacts} />
-            <Route
-              path="/surveys/create"
-              render={() => <h1>Surveys Create</h1>}
-            />
-            <Route path="/form" component={Form} />
             <Route render={() => <h1>Page Not Found</h1>} />
           </Switch>
         </div>
