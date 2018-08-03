@@ -2,8 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map } from 'lodash-es';
-import Button from '@material-ui/core/Button';
-import { List, ListItem, ListItemText, ListItemIcon } from 'components';
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Card,
+  CardHeader,
+  CardContent,
+} from 'components';
 import InboxIcon from '@material-ui/icons/Inbox';
 import { withRouter } from 'react-router-dom';
 import setContractInstance from '../../actions/Contract/setContractInstance';
@@ -19,31 +27,36 @@ class Surveys extends Component {
     getSurveys: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     createSurvey: PropTypes.func.isRequired,
-  }
+    accountId: PropTypes.string.isRequired,
+  };
 
   componentDidMount = async () => {
     this.getSurveys();
-  }
+  };
 
   onSurveyClick = (id) => {
     this.props.history.push(`/surveys/${id}/show`);
-  }
+  };
 
   getSurveys = async () => {
     const { surveyFactoryContract, accounts } = this.props;
 
     await this.props.getSurveys(surveyFactoryContract, accounts);
-  }
+  };
 
   createSurvey = async () => {
-    const { surveyFactoryContract, accounts } = this.props;
+    const { surveyFactoryContract, accounts, accountId } = this.props;
 
-    const result = await this.props.createSurvey(surveyFactoryContract, accounts);
+    await this.props.createSurvey(surveyFactoryContract, accounts);
 
-    if (result.success) {
-      this.props.history.push(`/surveys/${result.address}`);
+    const lastSurvey = await surveyFactoryContract.methods
+      .getLastSurvey(accountId)
+      .call();
+
+    if (lastSurvey) {
+      this.props.history.push(`/surveys/${lastSurvey}/show`);
     }
-  }
+  };
 
   render() {
     const { surveyIds } = this.props;
@@ -65,31 +78,31 @@ class Surveys extends Component {
 
     return (
       <div className="container">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.createSurvey}
-        >
-          Create Survey
-        </Button>
-        <List>
-          {
-            map(surveyIds, (id, index) => (
-              <ListItem
-                key={index}
-                button
-                onClick={() => this.onSurveyClick(id)}
-              >
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={id}
-                />
-              </ListItem>
-            ))
-          }
-        </List>
+        <Card>
+          <CardHeader title="Surveys" />
+          <CardContent>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.createSurvey}
+              text="Create Survey"
+            />
+            <List>
+              {map(surveyIds, (id, index) => (
+                <ListItem
+                  key={index}
+                  button
+                  onClick={() => this.onSurveyClick(id)}
+                >
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={id} />
+                </ListItem>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -106,8 +119,11 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-  setContractInstance,
-  getSurveys,
-  createSurvey,
-})(withRouter(Surveys));
+export default connect(
+  mapStateToProps,
+  {
+    setContractInstance,
+    getSurveys,
+    createSurvey,
+  },
+)(withRouter(Surveys));

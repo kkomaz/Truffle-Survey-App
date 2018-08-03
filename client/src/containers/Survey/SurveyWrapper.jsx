@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash-es';
 import { Route, Switch } from 'react-router-dom';
+import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from 'actions/constants';
+import setContractInstance from 'actions/Contract/setContractInstance';
+import surveyFactoryContractJSON from 'contracts/SurveyFactory.json';
 import getSurvey from '../../actions/Survey/getSurvey';
 import SurveyCreateQuestions from './SurveyCreateQuestions';
 import SurveyShow from './SurveyShow';
@@ -16,10 +19,26 @@ class SurveyWrapper extends Component {
     surveyId: PropTypes.string.isRequired,
     accountId: PropTypes.string,
     surveyFactoryContract: PropTypes.object,
+    setContractInstance: PropTypes.func.isRequired,
   };
 
+  state = { loading: true };
+
   componentDidMount = async () => {
-    const { web3, surveyId } = this.props;
+    const { web3, surveyFactoryContract, surveyId } = this.props;
+
+    if (isEmpty(surveyFactoryContract)) {
+      try {
+        const result = await this.props.setContractInstance(web3, surveyFactoryContractJSON, SET_SURVEY_FACTORY_CONTRACT_INSTANCE);
+        if (result.success) {
+          this.setState({ loading: false });
+        }
+      } catch (error) {
+        this.setState({ loading: false });
+      }
+    } else {
+      this.setState({ loading: false });
+    }
 
     await this.props.getSurvey(surveyId, web3);
   };
@@ -34,7 +53,7 @@ class SurveyWrapper extends Component {
       surveyFactoryContract,
     } = this.props;
 
-    if (isEmpty(surveyContract)) {
+    if (isEmpty(surveyContract) || this.state.loading) {
       return <div>Pending...</div>;
     }
 
@@ -64,7 +83,6 @@ class SurveyWrapper extends Component {
                 surveyContract={surveyContract}
                 surveyId={surveyId}
                 accountId={accountId}
-                surveyFactoryContract={surveyFactoryContract}
               />
             )}
           />
@@ -84,10 +102,10 @@ function mapStateToProps(state, ownProps) {
   const surveyId = ownProps.match.params.survey_id;
 
   return {
-    surveyId,
+    accountId: state.web3.accounts[0],
     surveyContract: state.survey[surveyId],
     surveyFactoryContract: state.contract.surveyFactoryContract,
-    accountId: state.web3.accounts[0],
+    surveyId,
   };
 }
 
@@ -95,5 +113,6 @@ export default connect(
   mapStateToProps,
   {
     getSurvey,
+    setContractInstance,
   },
 )(SurveyWrapper);

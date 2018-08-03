@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardHeader, Button, CardContent } from 'components';
+import { Card, CardHeader, CardContent } from 'components';
 import SimpleList from 'components/Display/SimpleList';
 import { range } from 'lodash-es';
 import convertToNumber from 'utils/convertToNumber';

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FieldArray, reduxForm } from 'redux-form';
 import { Button, Card, CardContent, CardHeader } from 'components';
+import { range, isEmpty } from 'lodash-es';
 import { withRouter } from 'react-router-dom';
+import convertToNumber from 'utils/convertToNumber';
 import SurveyQuestions from './SurveyQuestions';
 
 class CreateSurveyQuestions extends Component {
@@ -14,11 +16,11 @@ class CreateSurveyQuestions extends Component {
     surveyContract: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     accountId: PropTypes.string.isRequired,
-    surveyFactoryContract: PropTypes.object.isRequired,
+    surveyId: PropTypes.string.isRequired,
   };
 
   onSubmit = async (values) => {
-    const { surveyContract, accountId, surveyFactoryContract } = this.props;
+    const { surveyContract, accountId, surveyId } = this.props;
     const { questions } = values;
     await surveyContract.methods
       .createQuestion(...questions)
@@ -26,10 +28,11 @@ class CreateSurveyQuestions extends Component {
         from: accountId,
       });
 
-    const lastSurvey = await surveyFactoryContract.methods.getLastSurvey(accountId).call();
+    const questionCount = convertToNumber(await surveyContract.methods.getQuestionCount().call());
 
-    if (lastSurvey) {
-      this.props.history.push(`/surveys/${lastSurvey}/show`);
+    if (isEmpty(questionCount === 0)) {
+      console.log(questionCount);
+      this.props.history.push(`/surveys/${surveyId}/show`);
     }
   };
 

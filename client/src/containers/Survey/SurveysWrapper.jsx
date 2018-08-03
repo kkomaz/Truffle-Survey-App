@@ -12,6 +12,7 @@ class SurveysWrapper extends Component {
     setContractInstance: PropTypes.func.isRequired,
     web3: PropTypes.object.isRequired,
     accounts: PropTypes.array.isRequired,
+    accountId: PropTypes.string.isRequired,
   }
 
   state = { loading: true };
@@ -35,7 +36,7 @@ class SurveysWrapper extends Component {
   }
 
   render() {
-    const { web3, accounts } = this.props;
+    const { web3, accounts, accountId } = this.props;
     const { loading } = this.state;
 
     if (loading) {
@@ -48,11 +49,12 @@ class SurveysWrapper extends Component {
           <Route
             exact
             path="/"
-            render={() => <Survey web3={web3} accounts={accounts} />}
+            render={() => <Survey web3={web3} accounts={accounts} accountId={accountId} />}
           />
           <Route
+            exact
             path="/surveys"
-            render={() => <Survey web3={web3} accounts={accounts} />}
+            render={() => <Survey web3={web3} accounts={accounts} accountId={accountId} />}
           />
         </Switch>
       </div>
@@ -62,6 +64,7 @@ class SurveysWrapper extends Component {
 
 function mapStateToProps(state) {
   return {
+    accountId: state.web3.accounts[0],
     surveyFactoryContract: state.contract.surveyFactoryContract,
     surveyIds: state.survey.ids,
   };
