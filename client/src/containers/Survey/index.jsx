@@ -15,10 +15,8 @@ import {
 import InboxIcon from '@material-ui/icons/Inbox';
 import { withRouter } from 'react-router-dom';
 import setContractInstance from '../../actions/Contract/setContractInstance';
-import surveyFactoryContractJSON from '../../contracts/SurveyFactory.json';
 import getSurveys from '../../actions/Survey/getSurveys';
 import createSurvey from '../../actions/Survey/createSurvey';
-import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from '../../actions/constants';
 
 class Surveys extends Component {
   static propTypes = {
@@ -67,11 +65,10 @@ class Surveys extends Component {
           <h1>No Surveys created!</h1>
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             onClick={this.createSurvey}
-          >
-            Create Survey
-          </Button>
+            text="Create Survey"
+          />
         </div>
       );
     }

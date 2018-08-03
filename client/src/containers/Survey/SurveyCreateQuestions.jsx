@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FieldArray, reduxForm } from 'redux-form';
 import { Button, Card, CardContent, CardHeader } from 'components';
-import { range, isEmpty } from 'lodash-es';
 import { withRouter } from 'react-router-dom';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyQuestions from './SurveyQuestions';
@@ -20,7 +19,7 @@ class CreateSurveyQuestions extends Component {
   };
 
   onSubmit = async (values) => {
-    const { surveyContract, accountId, surveyId } = this.props;
+    const { surveyContract, accountId } = this.props;
     const { questions } = values;
     await surveyContract.methods
       .createQuestion(...questions)
@@ -28,17 +27,25 @@ class CreateSurveyQuestions extends Component {
         from: accountId,
       });
 
-    const questionCount = convertToNumber(await surveyContract.methods.getQuestionCount().call());
-
-    if (isEmpty(questionCount === 0)) {
-      console.log(questionCount);
-      this.props.history.push(`/surveys/${surveyId}/show`);
-    }
+    this.navigateAway();
   };
 
   onCancelClick = () => {
     this.props.history.goBack();
   };
+
+  // Hack to check if count has updated
+  navigateAway = async () => {
+    const { surveyContract, surveyId } = this.props;
+
+    const questionCount = convertToNumber(await surveyContract.methods.getQuestionCount().call());
+
+    if (questionCount === 0) {
+      setTimeout(this.navigateAway, 5000);
+    } else {
+      this.props.history.push(`/surveys/${surveyId}/show`);
+    }
+  }
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
