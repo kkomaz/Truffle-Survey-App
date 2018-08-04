@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash-es';
 import { Route, Switch } from 'react-router-dom';
-import getSurvey from '../../actions/Survey/getSurvey';
+import { Loader, Card, CardHeader, CardContent } from 'components';
+import getSurvey from 'actions/Survey/getSurvey';
 import SurveyCreateQuestions from './SurveyCreateQuestions';
 import SurveyShow from './SurveyShow';
 
@@ -35,7 +36,16 @@ class SurveyWrapper extends Component {
     } = this.props;
 
     if (isEmpty(surveyContract)) {
-      return <div>Pending...</div>;
+      return (
+        <div className="container">
+          <Card>
+            <CardHeader title="Survey" />
+            <CardContent>
+              <Loader />
+            </CardContent>
+          </Card>
+        </div>
+      );
     }
 
     return (

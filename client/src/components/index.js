@@ -6,14 +6,18 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import CardHeader from './Display/Card/CardHeader';
 import Button from './Display/Button';
+import BarLoader from './Display/BarLoader';
+import Loader from './Display/Loader';
 
 export {
+  BarLoader,
   Button,
-  CardHeader,
   Card,
   CardContent,
+  CardHeader,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
+  ListItemText,
+  Loader,
 };

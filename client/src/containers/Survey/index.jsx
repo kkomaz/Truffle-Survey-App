@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map } from 'lodash-es';
 import {
+  BarLoader,
   Button,
   List,
   ListItem,
@@ -18,6 +19,7 @@ import setContractInstance from '../../actions/Contract/setContractInstance';
 import getSurveys from '../../actions/Survey/getSurveys';
 import createSurvey from '../../actions/Survey/createSurvey';
 
+
 class Surveys extends Component {
   static propTypes = {
     surveyFactoryContract: PropTypes.object,
@@ -27,6 +29,8 @@ class Surveys extends Component {
     createSurvey: PropTypes.func.isRequired,
     accountId: PropTypes.string.isRequired,
   };
+
+  state = { loading: true };
 
   componentDidMount = async () => {
     this.getSurveys();
@@ -40,6 +44,7 @@ class Surveys extends Component {
     const { surveyFactoryContract, accounts } = this.props;
 
     await this.props.getSurveys(surveyFactoryContract, accounts);
+    this.setState({ loading: false });
   };
 
   createSurvey = async () => {
@@ -81,26 +86,31 @@ class Surveys extends Component {
         <Card>
           <CardHeader title="Surveys" />
           <CardContent>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={this.createSurvey}
-              text="Create Survey"
-            />
-            <List>
-              {map(surveyIds, (id, index) => (
-                <ListItem
-                  key={index}
-                  button
-                  onClick={() => this.onSurveyClick(id)}
-                >
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={id} />
-                </ListItem>
-              ))}
-            </List>
+            {
+              this.state.loading ? <BarLoader /> :
+              <React.Fragment>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={this.createSurvey}
+                  text="Create Survey"
+                />
+                <List>
+                  {map(surveyIds, (id, index) => (
+                    <ListItem
+                      key={index}
+                      button
+                      onClick={() => this.onSurveyClick(id)}
+                    >
+                      <ListItemIcon>
+                        <InboxIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={id} />
+                    </ListItem>
+                  ))}
+                </List>
+              </React.Fragment>
+            }
           </CardContent>
         </Card>
       </div>

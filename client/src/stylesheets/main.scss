@@ -2,6 +2,7 @@
 @import "./mixins/_assert-ascending";
 @import "./mixins/_grid";
 @import "./mixins/_grid-framework";
+@import "./mixins/_nth-children";
 
 @import "./variable";
 @import "./grid";
@@ -9,6 +10,8 @@
 @import "./loader";
 
 @import './modules/surveys/surveys';
+@import "./modules/BarLoader/bar-loader";
+@import "./modules/Loader/loader";
 
 ul {
   list-style-type: none;

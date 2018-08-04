@@ -1,0 +1,7 @@
+@mixin nth-children($points...) {
+    @each $point in $points {
+        &:nth-child(#{$point}) {
+            @content;
+        }
+    }
+}
