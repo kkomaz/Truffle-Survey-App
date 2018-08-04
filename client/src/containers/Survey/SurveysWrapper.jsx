@@ -5,6 +5,7 @@ import { Route, withRouter, Switch } from 'react-router-dom';
 import setContractInstance from 'actions/Contract/setContractInstance';
 import { SET_SURVEY_FACTORY_CONTRACT_INSTANCE } from 'actions/constants';
 import surveyFactoryContractJSON from 'contracts/SurveyFactory.json';
+import setCurrentAccount from 'actions/Web3/setCurrentAccount';
 import Survey from './index';
 import SurveyWrapper from './SurveyWrapper';
 
@@ -14,6 +15,8 @@ class SurveysWrapper extends Component {
     web3: PropTypes.object.isRequired,
     accounts: PropTypes.array.isRequired,
     accountId: PropTypes.string.isRequired,
+    setCurrentAccount: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   state = { loading: true };
@@ -34,6 +37,11 @@ class SurveysWrapper extends Component {
     } else {
       this.setState({ loading: false });
     }
+
+    web3.currentProvider.publicConfigStore.on('update', (acc) => {
+      this.props.setCurrentAccount(acc.selectedAddress);
+      this.props.history.push('/');
+    });
   }
 
   render() {
@@ -79,4 +87,5 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   setContractInstance,
+  setCurrentAccount,
 })(withRouter(SurveysWrapper));
