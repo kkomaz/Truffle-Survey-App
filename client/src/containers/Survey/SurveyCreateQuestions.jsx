@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FieldArray, reduxForm } from 'redux-form';
-import { Button, Card, CardContent, CardHeader } from 'components';
+import { Card, CardContent, CardHeader, SubmissionButtons } from 'components';
 import { withRouter } from 'react-router-dom';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyQuestions from './SurveyQuestions';
@@ -57,30 +57,12 @@ class CreateSurveyQuestions extends Component {
           <CardContent>
             <form onSubmit={handleSubmit(this.onSubmit)}>
               <FieldArray name="questions" component={SurveyQuestions} />
-              <div className="survey-create-questions__buttons">
-                <Button
-                  className="mr-half"
-                  text="Reset"
-                  danger
-                  type="button"
-                  disabled={pristine || submitting}
-                  onClick={reset}
-                />
-                <Button
-                  className="mr-half"
-                  text="Cancel"
-                  type="button"
-                  disabled={pristine || submitting}
-                  onClick={this.onCancelClick}
-                />
-                <Button
-                  className="mr-half"
-                  text="Submit"
-                  color="primary"
-                  type="submit"
-                  disabled={submitting}
-                />
-              </div>
+              <SubmissionButtons
+                reset={reset}
+                pristine={pristine}
+                submitting={submitting}
+                onCancelClick={this.onCancelClick}
+              />
             </form>
           </CardContent>
         </Card>

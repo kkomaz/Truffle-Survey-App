@@ -63,23 +63,6 @@ contract Survey {
         return participants[msg.sender];
     }
 
-    function giveAnswer(uint _index, bool _answer) public returns (bool) {
-        Question storage currentQuestion = questions[_index];
-
-        if (_answer) {
-            currentQuestion.yes += 1;
-        } else {
-            currentQuestion.no += 1;
-        }
-
-        if (_index == questionCount) {
-            participants[msg.sender] = true;
-            participantCount++;
-        }
-
-        return true;
-    }
-
     function getBalance() public view returns (uint) {
         return address(this).balance;
     }
@@ -110,8 +93,23 @@ contract Survey {
         return false;
     }
 
-    // Overloaded Functions
+    function giveAnswers(bool[] answers) public returns (bool) {
+        for (uint i = 0; i < questionCount; i++) {
+            Question storage currentQuestion = questions[i];
 
+            if (answers[i]) {
+                currentQuestion.yes += 1;
+            } else {
+                currentQuestion.no += 1;
+            }
+        }
+
+        participants[msg.sender] = true;
+        participantCount++;
+        return true;
+    }
+
+    // Overloaded Functions
     function createQuestion(string _ask) public returns (bool) {
         Question memory newQuestion = Question({
            ask:  _ask,

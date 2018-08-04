@@ -8,6 +8,9 @@ import CardHeader from './Display/Card/CardHeader';
 import Button from './Display/Button';
 import BarLoader from './Display/BarLoader';
 import Loader from './Display/Loader';
+import Radio from './Forms/Radio';
+import SubmissionButtons from './Forms/SubmissionButtons';
+import Switch from './Forms/Switch';
 
 export {
   BarLoader,
@@ -20,4 +23,7 @@ export {
   ListItemIcon,
   ListItemText,
   Loader,
+  Radio,
+  SubmissionButtons,
+  Switch,
 };

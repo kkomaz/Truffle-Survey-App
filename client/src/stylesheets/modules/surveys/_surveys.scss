@@ -9,9 +9,8 @@
   }
 }
 
-.survey-create-questions {
-  &__buttons {
+.survey-show-form {
+  &__question {
     display: flex;
-    justify-content: flex-end;
   }
 }

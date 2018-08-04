@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardHeader, CardContent } from 'components';
+import { Card, CardHeader, CardContent, BarLoader } from 'components';
 import SimpleList from 'components/Display/SimpleList';
-import { range } from 'lodash-es';
+import { range, isUndefined } from 'lodash-es';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyShowButtons from './SurveyShowButtons';
+import SurveyShowForm from './SurveyShowForm';
 
 class SurveyShow extends Component {
   static propTypes = {
@@ -45,6 +46,19 @@ class SurveyShow extends Component {
     const { questions, questionCount, enrolled, owner } = this.state;
     const { surveyId, accountId } = this.props;
 
+    if (isUndefined(questionCount)) {
+      return (
+        <div className="survey-show container">
+          <Card>
+            <CardHeader title={surveyId} />
+            <CardContent>
+              <BarLoader />
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
     return (
       <div className="survey-show container">
         <Card>
@@ -62,16 +76,16 @@ class SurveyShow extends Component {
                 <h4>No Questions Exist!</h4>
               </CardContent>
             ) : (
-              <div>
+              <CardContent>
                 {
                   owner === accountId &&
                   <div>Hello World</div>
                 }
                 {
-                  enrolled ? null :
-                  <SimpleList items={questions} />
+                  enrolled ? <SimpleList items={questions} /> :
+                  <SurveyShowForm questions={questions} />
                 }
-              </div>
+              </CardContent>
             )
           }
         </Card>
