@@ -41,17 +41,17 @@ class Surveys extends Component {
   };
 
   getSurveys = async () => {
-    const { surveyFactoryContract, accounts } = this.props;
+    const { surveyFactoryContract, accountId } = this.props;
 
-    await this.props.getSurveys(surveyFactoryContract, accounts);
+    await this.props.getSurveys(surveyFactoryContract, accountId);
     this.setState({ loading: false });
   };
 
   createSurvey = async () => {
-    const { surveyFactoryContract, accounts, accountId } = this.props;
+    const { surveyFactoryContract, accountId } = this.props;
 
     try {
-      const result = await this.props.createSurvey(surveyFactoryContract, accounts);
+      const result = await this.props.createSurvey(surveyFactoryContract, accountId);
       const lastSurvey = await surveyFactoryContract.methods
         .getLastSurvey(accountId)
         .call();

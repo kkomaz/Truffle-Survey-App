@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
 import { map } from 'lodash-es';
-import { SubmissionButtons, Switch } from 'components';
+import { SubmissionButtons, Select } from 'components';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import { withRouter } from 'react-router-dom';
 
 class SurveyShowForm extends Component {
   static propTypes = {
@@ -11,10 +14,35 @@ class SurveyShowForm extends Component {
     reset: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     questions: PropTypes.array.isRequired,
+    accountId: PropTypes.string.isRequired,
+    surveyContract: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
   };
 
-  onSubmit = (values) => {
-    console.log(values);
+  state = {
+    options: [
+      { label: 'YES', value: 'yes' },
+      { label: 'NO', value: 'no' },
+    ],
+  }
+
+  onSubmit = async (fields) => {
+    const { accountId, surveyContract } = this.props;
+    const results = map(Object.values(fields), (result) => {
+      if (result === 'yes') {
+        return true;
+      }
+
+      return false;
+    });
+
+    await surveyContract.methods
+      .giveAnswers(results)
+      .send({
+        from: accountId,
+      });
+
+    this.props.history.push('/surveys');
   }
 
   render() {
@@ -27,27 +55,36 @@ class SurveyShowForm extends Component {
       >
         {
           map(questions, (q, index) => (
-            <div className="survey-show-form__question" key={index}>
-              <p>{q}</p>
-              <div>
-                <label className="ml-half">
-                  (No/Yes)
-                </label>
-                <Field
-                  name={`question-${index}`}
-                  component={Switch}
-                  type="checkbox"
-                />
+            <div className="row" key={index}>
+              <div className="col-sm-12">
+                <p className="mb-quarter">{q}</p>
+              </div>
+
+              <div className="col-sm-12">
+                <FormControl style={{ minWidth: '120px', width: '100%' }}>
+                  <InputLabel htmlFor="yes/no">Yes/No</InputLabel>
+                  <Field
+                    name={`question-${index}`}
+                    component={Select}
+                    type="select"
+                    options={this.state.options}
+                  />
+                </FormControl>
               </div>
             </div>
           ))
         }
-        <SubmissionButtons
-          reset={reset}
-          pristine={pristine}
-          submitting={submitting}
-          onCancelClick={this.onCancelClick}
-        />
+
+        <div className="row mt-one">
+          <div className="col-xs-12">
+            <SubmissionButtons
+              reset={reset}
+              pristine={pristine}
+              submitting={submitting}
+              onCancelClick={this.onCancelClick}
+            />
+          </div>
+        </div>
       </form>
     );
   }
@@ -55,4 +92,4 @@ class SurveyShowForm extends Component {
 
 export default reduxForm({
   form: 'SurveyShowForm', // a unique identifier for this form
-})(SurveyShowForm);
+})(withRouter(SurveyShowForm));

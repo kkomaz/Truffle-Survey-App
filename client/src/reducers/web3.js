@@ -14,6 +14,9 @@ export default function web3Reducer(state = defaultState, action) {
     case 'SET_WEB3': {
       return { ...state, web3: payload, accounts: action.accounts, currentAccount: action.accounts[0] };
     }
+    case 'SET_CURRENT_ADDRESS': {
+      return { ...state, currentAccount: payload };
+    }
     default: {
       return state;
     }

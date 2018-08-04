@@ -8,6 +8,7 @@ import {
   BrowserRouter,
 } from 'react-router-dom';
 import setWeb3 from './actions/Web3/setWeb3';
+import setCurrentAccount from './actions/Web3/setCurrentAccount';
 import SurveyWrapper from './containers/Survey/SurveyWrapper';
 import SurveysWrapper from './containers/Survey/SurveysWrapper';
 import './stylesheets/main.scss';
@@ -41,12 +42,17 @@ class App extends Component {
     web3: PropTypes.object.isRequired,
     setWeb3: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
+    setCurrentAccount: PropTypes.func.isRequired,
   };
 
   state = { loading: true };
 
   componentDidMount = async () => {
     const result = await this.props.setWeb3();
+
+    result.currentProvider.publicConfigStore.on('update', (acc) => {
+      this.props.setCurrentAccount(acc.selectedAddress);
+    });
 
     if (result) {
       this.setState({ loading: false });
@@ -93,5 +99,6 @@ export default connect(
   mapStateToProps,
   {
     setWeb3,
+    setCurrentAccount,
   },
 )(App);

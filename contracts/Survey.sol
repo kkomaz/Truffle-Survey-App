@@ -52,15 +52,14 @@ contract Survey {
     function getResults() public view returns (uint[]) {
         uint[] memory a = new uint[](questionCount);
         for (uint i = 0; i < questionCount; i++) {
-            a[0] = a[0] + questions[i].yes;
-            a[1] = a[1] + questions[i].no;
+            a[i] = a[i] + questions[i].yes;
         }
 
         return a;
     }
 
-    function getParticipant() view public returns (bool) {
-        return participants[msg.sender];
+    function getParticipant(address _participant) view public returns (bool) {
+        return participants[_participant];
     }
 
     function getBalance() public view returns (uint) {

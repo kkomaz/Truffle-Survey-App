@@ -92,7 +92,7 @@ function mapStateToProps(state, ownProps) {
   const surveyId = ownProps.match.params.survey_id;
 
   return {
-    accountId: state.web3.accounts[0],
+    accountId: state.web3.currentAccount,
     surveyContract: state.survey[surveyId],
     surveyFactoryContract: state.contract.surveyFactoryContract,
     surveyId,
