@@ -6,6 +6,7 @@ import { range, isUndefined, map } from 'lodash-es';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyShowButtons from './SurveyShowButtons';
 import SurveyShowForm from './SurveyShowForm';
+import SurveyShowDisplay from './SurveyShowDisplay';
 
 class SurveyShow extends Component {
   static propTypes = {
@@ -32,6 +33,9 @@ class SurveyShow extends Component {
     }
 
     const surveyResultsTrue = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
+    const surveyResultsFalse = map(await surveyContract.methods.getResults(false).call(), i => convertToNumber(i));
+
+    console.log(surveyResultsFalse);
 
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()
@@ -49,13 +53,14 @@ class SurveyShow extends Component {
       questionCount,
       enrolled,
       owner,
-      surveyResults: surveyResultsTrue,
+      surveyResultsTrue,
+      surveyResultsFalse,
       participantCount,
     });
   };
 
   render() {
-    const { questions, questionCount, enrolled, owner, surveyResults, participantCount } = this.state;
+    const { questions, questionCount, enrolled, owner, surveyResultsTrue, surveyResultsFalse, participantCount } = this.state;
     const { surveyId, accountId, surveyContract } = this.props;
 
     if (isUndefined(questionCount)) {
@@ -83,13 +88,18 @@ class SurveyShow extends Component {
           ) : (
             <CardContent>
               {enrolled ? (
-                <SimpleList items={questions} />
+                <SurveyShowDisplay
+                  questions={questions}
+                  surveyResultsTrue={surveyResultsTrue}
+                  surveyResultsFalse={surveyResultsFalse}
+                />
               ) : (
                 <SurveyShowForm
                   questions={questions}
                   accountId={accountId}
                   surveyContract={surveyContract}
-                  surveyResults={surveyResults}
+                  surveyResultsTrue={surveyResultsTrue}
+                  surveyResultsFalse={surveyResultsFalse}
                   participantCount={participantCount}
                 />
               )}

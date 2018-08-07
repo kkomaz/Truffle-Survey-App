@@ -57,7 +57,7 @@ contract Survey {
                 a[i] = a[i] + questions[i].yes;
             }
         } else {
-            for (uint j = 0; i < questionCount; j++) {
+            for (uint j = 0; j < questionCount; j++) {
                 a[j] = a[j] + questions[j].no;
             }
         }

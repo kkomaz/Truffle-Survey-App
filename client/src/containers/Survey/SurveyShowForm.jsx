@@ -61,7 +61,13 @@ class SurveyShowForm extends Component {
   }
 
   render() {
-    const { questions, handleSubmit, pristine, reset, submitting } = this.props;
+    const {
+      questions,
+      handleSubmit,
+      pristine,
+      reset,
+      submitting,
+    } = this.props;
     const { confirming } = this.state;
 
     if (confirming) {
