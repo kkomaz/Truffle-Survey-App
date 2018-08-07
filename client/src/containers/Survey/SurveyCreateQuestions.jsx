@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FieldArray, reduxForm } from 'redux-form';
-import { Card, CardContent, CardHeader, SubmissionButtons } from 'components';
+import { Card, CardContent, CardHeader, SubmissionButtons, BarLoader } from 'components';
 import { withRouter } from 'react-router-dom';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyQuestions from './SurveyQuestions';
@@ -18,9 +18,12 @@ class CreateSurveyQuestions extends Component {
     surveyId: PropTypes.string.isRequired,
   };
 
+  state = { confirming: false };
+
   onSubmit = async (values) => {
     const { surveyContract, accountId } = this.props;
     const { questions } = values;
+
     await surveyContract.methods
       .createQuestion(...questions)
       .send({
@@ -36,6 +39,7 @@ class CreateSurveyQuestions extends Component {
 
   // Hack to check if count has updated
   navigateAway = async () => {
+    this.setState({ confirming: true });
     const { surveyContract, surveyId } = this.props;
 
     const questionCount = convertToNumber(await surveyContract.methods.getQuestionCount().call());
@@ -43,27 +47,33 @@ class CreateSurveyQuestions extends Component {
     if (questionCount === 0) {
       setTimeout(this.navigateAway, 5000);
     } else {
-      this.props.history.push(`/surveys/${surveyId}/show`);
+      this.setState({ confirming: false }, () => {
+        this.props.history.push(`/surveys/${surveyId}/show`);
+      });
     }
   }
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
+    const { confirming } = this.state;
 
     return (
       <div className="survey-create-questions container">
         <Card>
           <CardHeader title="Create Questions" />
           <CardContent>
-            <form onSubmit={handleSubmit(this.onSubmit)}>
-              <FieldArray name="questions" component={SurveyQuestions} />
-              <SubmissionButtons
-                reset={reset}
-                pristine={pristine}
-                submitting={submitting}
-                onCancelClick={this.onCancelClick}
-              />
-            </form>
+            {
+              confirming ? <BarLoader /> :
+              <form onSubmit={handleSubmit(this.onSubmit)}>
+                <FieldArray name="questions" component={SurveyQuestions} />
+                <SubmissionButtons
+                  reset={reset}
+                  pristine={pristine}
+                  submitting={submitting}
+                  onCancelClick={this.onCancelClick}
+                />
+              </form>
+            }
           </CardContent>
         </Card>
       </div>

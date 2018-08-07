@@ -39,7 +39,8 @@ class SurveyShow extends Component {
     allQuestions = await surveyContract.methods
       .returnAllQuestions(...rangeQuestionCount)
       .call();
-    const questions = Object.values(allQuestions);
+
+    const questions = typeof (allQuestions) === 'string' ? [allQuestions] : Object.values(allQuestions);
     const enrolled = await surveyContract.methods.getParticipant(accountId).call();
 
     return this.setState({
@@ -55,8 +56,6 @@ class SurveyShow extends Component {
   render() {
     const { questions, questionCount, enrolled, owner, surveyResults, participantCount } = this.state;
     const { surveyId, accountId, surveyContract } = this.props;
-
-    console.log(enrolled);
 
     if (isUndefined(questionCount)) {
       return (
