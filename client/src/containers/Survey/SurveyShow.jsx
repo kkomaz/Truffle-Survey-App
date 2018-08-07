@@ -68,7 +68,7 @@ class SurveyShow extends Component {
     return (
       <div className="survey-show container">
         <Card>
-          <CardHeader title={surveyId} />
+          <CardHeader title={surveyId} subheader={enrolled ? 'Already applied - Display Only' : ''} />
           {questionCount === 0 ? (
             <CardContent>
               {owner === accountId && (
@@ -81,7 +81,6 @@ class SurveyShow extends Component {
             </CardContent>
           ) : (
             <CardContent>
-              {owner === accountId && <div>Hello World</div>}
               {enrolled ? (
                 <SimpleList items={questions} />
               ) : (
