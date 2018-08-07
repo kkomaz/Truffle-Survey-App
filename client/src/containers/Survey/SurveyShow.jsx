@@ -31,7 +31,8 @@ class SurveyShow extends Component {
       });
     }
 
-    const surveyResults = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
+    const surveyResultsTrue = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
+
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()
       .call());
@@ -48,7 +49,7 @@ class SurveyShow extends Component {
       questionCount,
       enrolled,
       owner,
-      surveyResults,
+      surveyResults: surveyResultsTrue,
       participantCount,
     });
   };
