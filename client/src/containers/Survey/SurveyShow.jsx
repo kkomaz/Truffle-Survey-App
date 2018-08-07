@@ -23,7 +23,7 @@ class SurveyShow extends Component {
       await surveyContract.methods.getQuestionCount().call(),
     );
     const owner = await surveyContract.methods.getOwner().call();
-    const surveyResults = map(await surveyContract.methods.getResults().call(), i => convertToNumber(i));
+    const surveyResults = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()
       .call());

@@ -23,7 +23,7 @@ const CardHeaderUI = (props) => {
   );
 };
 
-CardHeader.propTypes = {
+CardHeaderUI.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
