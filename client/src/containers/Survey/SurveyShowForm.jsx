@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
 import { map } from 'lodash-es';
-import { SubmissionButtons, Select } from 'components';
+import { SubmissionButtons, Select, BarLoader } from 'components';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import { withRouter } from 'react-router-dom';
@@ -24,6 +24,7 @@ class SurveyShowForm extends Component {
       { label: 'YES', value: 'yes' },
       { label: 'NO', value: 'no' },
     ],
+    confirming: false,
   }
 
   onSubmit = async (fields) => {
@@ -42,11 +43,30 @@ class SurveyShowForm extends Component {
         from: accountId,
       });
 
-    this.props.history.push('/surveys');
+    this.navigateAway();
+  }
+
+  navigateAway = async () => {
+    this.setState({ confirming: true });
+    const { surveyContract, accountId } = this.props;
+
+    const result = await surveyContract.methods
+      .getParticipant(accountId).call();
+
+    if (result) {
+      this.props.history.push('/surveys');
+    } else {
+      setTimeout(this.navigateAway, 5000);
+    }
   }
 
   render() {
     const { questions, handleSubmit, pristine, reset, submitting } = this.props;
+    const { confirming } = this.state;
+
+    if (confirming) {
+      return <BarLoader />;
+    }
 
     return (
       <form
