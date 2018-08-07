@@ -49,10 +49,17 @@ contract Survey {
       return owner;
     }
 
-    function getResults() public view returns (uint[]) {
+    function getResults(bool _type) public view returns (uint[]) {
         uint[] memory a = new uint[](questionCount);
-        for (uint i = 0; i < questionCount; i++) {
-            a[i] = a[i] + questions[i].yes;
+
+        if (_type) {
+            for (uint i = 0; i < questionCount; i++) {
+                a[i] = a[i] + questions[i].yes;
+            }
+        } else {
+            for (uint j = 0; i < questionCount; j++) {
+                a[j] = a[j] + questions[j].no;
+            }
         }
 
         return a;
