@@ -3,7 +3,7 @@ import { CREATE_SURVEY } from '../constants';
 const createSurvey = (contract, accountId) => {
   return async (dispatch) => {
     try {
-      await contract.methods
+      const request = await contract.methods
         .createSurvey()
         .send({
           from: accountId,
@@ -19,6 +19,7 @@ const createSurvey = (contract, accountId) => {
       return {
         success: true,
         address: result,
+        request,
       };
     } catch (error) {
       // Dispatch Notifier

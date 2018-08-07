@@ -23,10 +23,6 @@ class SurveyShow extends Component {
       await surveyContract.methods.getQuestionCount().call(),
     );
     const owner = await surveyContract.methods.getOwner().call();
-    const surveyResults = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
-    const participantCount = convertToNumber(await surveyContract.methods
-      .getParticipantCount()
-      .call());
 
     if (questionCount === 0) {
       return this.setState({
@@ -35,6 +31,10 @@ class SurveyShow extends Component {
       });
     }
 
+    const surveyResults = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
+    const participantCount = convertToNumber(await surveyContract.methods
+      .getParticipantCount()
+      .call());
     const rangeQuestionCount = range(questionCount);
     allQuestions = await surveyContract.methods
       .returnAllQuestions(...rangeQuestionCount)

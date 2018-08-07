@@ -22,7 +22,7 @@ class SurveysWrapper extends Component {
   state = { loading: true };
 
   componentDidMount = async () => {
-    const { web3, surveyFactoryContract } = this.props;
+    const { web3, surveyFactoryContract, accountId } = this.props;
 
     if (!surveyFactoryContract) {
       try {
@@ -39,8 +39,10 @@ class SurveysWrapper extends Component {
     }
 
     web3.currentProvider.publicConfigStore.on('update', (acc) => {
-      this.props.setCurrentAccount(acc.selectedAddress);
-      this.props.history.push('/');
+      if (accountId.toLowerCase() !== acc.selectedAddress) {
+        this.props.setCurrentAccount(acc.selectedAddress);
+        this.props.history.push('/');
+      }
     });
   }
 

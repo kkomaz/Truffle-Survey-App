@@ -52,12 +52,9 @@ class Surveys extends Component {
 
     try {
       const result = await this.props.createSurvey(surveyFactoryContract, accountId);
-      const lastSurvey = await surveyFactoryContract.methods
-        .getLastSurvey(accountId)
-        .call();
 
-      if (lastSurvey) {
-        this.props.history.push(`/surveys/${lastSurvey}/show`);
+      if (result.address) {
+        this.props.history.push(`/surveys/${result.address}/show`);
       }
     } catch (error) {
       console.log(error.message);
