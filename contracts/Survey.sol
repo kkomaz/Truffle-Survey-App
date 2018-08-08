@@ -37,8 +37,8 @@ contract Survey {
       return distributeAmount;
     }
 
-    function getQuestionLimit() public view returns (uint) {
-      return participantCount;
+    function getQuestionLimit() public pure returns (uint) {
+      return questionLimit;
     }
 
     function getSurveyRequiredCount() public pure returns (uint) {
