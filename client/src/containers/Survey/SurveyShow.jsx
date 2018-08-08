@@ -33,6 +33,7 @@ class SurveyShow extends Component {
 
     const surveyResultsTrue = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
     const surveyResultsFalse = map(await surveyContract.methods.getResults(false).call(), i => convertToNumber(i));
+    const surveyRequiredCount = await surveyContract.methods.getSurveyRequiredCount().call();
 
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()
@@ -53,11 +54,12 @@ class SurveyShow extends Component {
       surveyResultsTrue,
       surveyResultsFalse,
       participantCount,
+      surveyRequiredCount,
     });
   };
 
   render() {
-    const { questions, questionCount, enrolled, owner, surveyResultsTrue, surveyResultsFalse, participantCount } = this.state;
+    const { questions, questionCount, enrolled, owner, surveyResultsTrue, surveyResultsFalse, participantCount, surveyRequiredCount } = this.state;
     const { surveyId, accountId, surveyContract } = this.props;
 
     if (isUndefined(questionCount)) {
@@ -84,6 +86,9 @@ class SurveyShow extends Component {
             </CardContent>
           ) : (
             <CardContent>
+              <div className="survey-show__participation">
+                {participantCount} / {surveyRequiredCount} surveys completed
+              </div>
               {enrolled ? (
                 <SurveyShowDisplay
                   questions={questions}

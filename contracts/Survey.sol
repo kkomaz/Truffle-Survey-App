@@ -1,6 +1,11 @@
 pragma solidity ^0.4.24;
 
 contract Survey {
+    modifier participationCheck {
+        require(participantCount < surveyRequiredCount);
+        _;
+    }
+
     struct Question {
         string ask;
         uint yes;
@@ -99,7 +104,7 @@ contract Survey {
         return false;
     }
 
-    function giveAnswers(bool[] answers) public returns (bool) {
+    function giveAnswers(bool[] answers) participationCheck public returns (bool) {
         for (uint i = 0; i < questionCount; i++) {
             Question storage currentQuestion = questions[i];
 
