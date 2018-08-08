@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardHeader, CardContent, CardLoader } from 'components';
-import SimpleList from 'components/Display/SimpleList';
 import { range, isUndefined, map } from 'lodash-es';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyShowButtons from './SurveyShowButtons';
@@ -34,8 +33,6 @@ class SurveyShow extends Component {
 
     const surveyResultsTrue = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
     const surveyResultsFalse = map(await surveyContract.methods.getResults(false).call(), i => convertToNumber(i));
-
-    console.log(surveyResultsFalse);
 
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()

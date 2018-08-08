@@ -15,8 +15,6 @@ class SurveysWrapper extends Component {
     web3: PropTypes.object.isRequired,
     accounts: PropTypes.array.isRequired,
     accountId: PropTypes.string.isRequired,
-    setCurrentAccount: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
   }
 
   state = { loading: true };
@@ -40,8 +38,7 @@ class SurveysWrapper extends Component {
 
     web3.currentProvider.publicConfigStore.on('update', (acc) => {
       if (accountId.toLowerCase() !== acc.selectedAddress) {
-        this.props.setCurrentAccount(acc.selectedAddress);
-        this.props.history.push('/');
+        window.location.reload(true); // eslint-disable-line no-undef
       }
     });
   }
