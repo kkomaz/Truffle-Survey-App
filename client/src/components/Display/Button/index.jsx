@@ -17,6 +17,28 @@ const style = {
 export const ButtonUI = (props) => {
   const buttonProps = omit(props, 'danger');
 
+  if (props.danger && !props.contained) {
+    return (
+      <Button
+        {...buttonProps}
+        style={{ ...style.danger, ...style.general }}
+      >
+        {props.text}
+      </Button>
+    );
+  }
+
+  if (!props.contained) {
+    return (
+      <Button
+        {...buttonProps}
+        style={style.general}
+      >
+        {props.text}
+      </Button>
+    );
+  }
+
   if (props.danger) {
     return (
       <Button
@@ -28,6 +50,7 @@ export const ButtonUI = (props) => {
       </Button>
     );
   }
+
   return (
     <Button
       {...buttonProps}
@@ -43,11 +66,13 @@ ButtonUI.propTypes = {
   classes: PropTypes.object,
   danger: PropTypes.bool,
   text: PropTypes.string.isRequired,
+  contained: PropTypes.bool,
 };
 
 ButtonUI.defaultProps = {
   classes: {},
   danger: false,
+  contained: true,
 };
 
 export default ButtonUI;

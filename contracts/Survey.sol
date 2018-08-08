@@ -15,7 +15,7 @@ contract Survey {
     address public owner;
     // Constants restrictions to question and survey
     uint public constant questionLimit = 5;
-    uint public constant surveyRequiredCount = 10;
+    uint public constant surveyRequiredCount = 3;
 
     // Question detail parameters
     mapping(uint => Question) questions;

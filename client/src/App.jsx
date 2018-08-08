@@ -7,6 +7,8 @@ import {
   Switch,
   BrowserRouter,
 } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import { AppBar } from 'components';
 import setWeb3 from './actions/Web3/setWeb3';
 import SurveysWrapper from './containers/Survey/SurveysWrapper';
 import './stylesheets/main.scss';
@@ -14,23 +16,11 @@ import './stylesheets/main.scss';
 // NavLink - allows you to identify a current route and determine active state
 const Links = () => (
   <nav>
-    <NavLink exact activeClassName="active" to="/">
+    <NavLink exact activeClassName="active" to="/" style={{ marginRight: '10px' }}>
       Home
     </NavLink>
-    <NavLink activeStyle={{ color: 'green' }} to="/surveys">
+    <NavLink activeClassName="active" to="/surveys">
       Surveys
-    </NavLink>
-    <NavLink activeClassName="active" to="/contacts">
-      Contacts
-    </NavLink>
-    <NavLink activeStyle={{ color: 'black' }} to="/old/456">
-      Old
-    </NavLink>
-    <NavLink activeStyle={{ color: 'black' }} to="/new/123">
-      New
-    </NavLink>
-    <NavLink activeStyle={{ color: 'black' }} to="/form">
-      Form
     </NavLink>
   </nav>
 );
@@ -40,6 +30,7 @@ class App extends Component {
     web3: PropTypes.object.isRequired,
     setWeb3: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
+    accountId: PropTypes.string.isRequired,
   };
 
   state = { loading: true };
@@ -53,7 +44,7 @@ class App extends Component {
   };
 
   render() {
-    const { accounts, web3 } = this.props;
+    const { accounts, web3, accountId } = this.props;
 
     if (this.state.loading) {
       return <div>Loading...</div>;
@@ -61,8 +52,15 @@ class App extends Component {
 
     return (
       <BrowserRouter>
-        <div style={{ marginBottom: '20px' }}>
-          <Links />
+        <div>
+          <AppBar>
+            <Typography variant="title" color="inherit" style={{ flexGrow: '1', fontSize: '14px' }}>
+              ACCOUNT: {accountId}
+            </Typography>
+            <Typography variant="title" color="inherit">
+              <Links />
+            </Typography>
+          </AppBar>
           <Switch>
             <Route
               exact
@@ -83,6 +81,7 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
+    accountId: state.web3.currentAccount,
     web3: state.web3.web3,
     accounts: state.web3.accounts,
   };

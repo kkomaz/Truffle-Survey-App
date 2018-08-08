@@ -13,8 +13,10 @@ import Radio from './Forms/Radio';
 import SubmissionButtons from './Forms/SubmissionButtons';
 import Switch from './Forms/Switch';
 import Select from './Forms/Select';
+import AppBar from './Display/AppBar';
 
 export {
+  AppBar,
   BarLoader,
   Button,
   Card,
