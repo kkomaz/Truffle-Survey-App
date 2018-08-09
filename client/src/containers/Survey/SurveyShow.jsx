@@ -27,6 +27,7 @@ class SurveyShow extends Component {
     const balanceInWei = await surveyContract.methods.getBalance().call();
     const balance = parseInt(web3.utils.fromWei(balanceInWei, 'ether'), 10);
     const surveyRequiredCount = parseInt(await surveyContract.methods.getSurveyRequiredCount().call(), 10);
+    const ethPrice = await surveyContract.methods.getEthPrice().call();
 
     if (questionCount === 0) {
       return this.setState({
@@ -34,6 +35,7 @@ class SurveyShow extends Component {
         questionCount,
         owner,
         surveyRequiredCount,
+        ethPrice,
       });
     }
 
@@ -61,6 +63,7 @@ class SurveyShow extends Component {
       surveyResultsFalse,
       participantCount,
       surveyRequiredCount,
+      ethPrice,
     });
   };
 
@@ -75,6 +78,7 @@ class SurveyShow extends Component {
       surveyResultsFalse,
       participantCount,
       surveyRequiredCount,
+      ethPrice,
     } = this.state;
 
     const { surveyId, accountId, surveyContract, web3 } = this.props;
@@ -93,10 +97,6 @@ class SurveyShow extends Component {
           <CardHeader title={surveyId} subheader={enrolled ? 'Already applied - Display Only' : ''} />
           {questionCount === 0 ? (
             <CardContent>
-              <div className="survey-show__finance">
-                <p>{balance} Ether deposited</p>
-                <p>Distribution Amount: {round((balance / surveyRequiredCount), 2)} Ether</p>
-              </div>
               {owner === accountId && (
                 <SurveyShowButtons
                   surveyId={surveyId}
@@ -106,13 +106,22 @@ class SurveyShow extends Component {
                   web3={web3}
                 />
               )}
+              <div className="survey-show__contract-details">
+                <p>{balance} Ether deposited</p>
+                <p>Distribution Amount: {round((balance / surveyRequiredCount), 2)} Ether</p>
+                <p>Current Eth Price: ${round(ethPrice, 2)}</p>
+              </div>
               <h4>No Questions Exist!</h4>
             </CardContent>
           ) : (
             <CardContent>
               <div className="survey-show__participation">
                 {participantCount} / {surveyRequiredCount} surveys completed
+                <p>{balance} Ether deposited</p>
+                <p>Distribution Amount: {round((balance / surveyRequiredCount), 2)} Ether</p>
+                <p>Current Eth Price: ${round(ethPrice, 2)}</p>
               </div>
+
               {enrolled ? (
                 <SurveyShowDisplay
                   questions={questions}

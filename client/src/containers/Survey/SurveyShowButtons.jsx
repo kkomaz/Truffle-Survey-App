@@ -14,14 +14,20 @@ class SurveyShowButtons extends Component {
     web3: PropTypes.object.isRequired,
   }
 
-  state = { amount: '' };
+  state = { amount: '', showFundInput: false };
 
   onCreateQuestionClick = () => {
     const { surveyId } = this.props;
     this.props.history.push(`/surveys/${surveyId}/create`);
   }
 
-  onAddFunds = async () => {
+  onAddFunds = () => {
+    const { showFundInput } = this.state;
+
+    this.setState({ showFundInput: !showFundInput });
+  }
+
+  onSubmitFunds = async () => {
     const { surveyContract, accountId, web3 } = this.props;
     const { amount } = this.state;
     const { BN } = web3.utils;
@@ -49,33 +55,67 @@ class SurveyShowButtons extends Component {
     })
   )
 
+  updateEthPrice = async () => {
+    const { surveyContract, accountId } = this.props;
+
+    try {
+      await surveyContract.methods
+        .updatePrice()
+        .send({
+          from: accountId,
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
 
   render() {
     const { questionCount } = this.props;
+    const { showFundInput } = this.state;
 
     return (
       <div className="survey-show-buttons">
-        <Button
-          text="Create Questions"
-          color="primary"
-          onClick={this.onCreateQuestionClick}
-          disabled={questionCount > 0}
-        />
-        <div className="survey-show-buttons__deposit" style={{ marginLeft: '5px' }}>
-          <TextField
-            id="amount"
-            label="Amount"
-            value={this.state.amount}
-            onChange={this.handleChange('amount')}
-            margin="normal"
+        <div className="survey-show-buttons__price-update">
+          <Button
+            text="Create Questions"
+            color="primary"
+            onClick={this.onCreateQuestionClick}
+            disabled={questionCount > 0}
+            style={{
+              marginLeft: '0px',
+            }}
           />
-
           <Button
             text="Add Funds"
             color="secondary"
             onClick={this.onAddFunds}
           />
+          <Button
+            text="Update Eth Price"
+            onClick={this.updateEthPrice}
+            danger
+          />
         </div>
+        {
+          showFundInput &&
+          <div className="survey-show-buttons__deposit">
+            <TextField
+              id="amount"
+              label="Amount"
+              value={this.state.amount}
+              onChange={this.handleChange('amount')}
+              margin="normal"
+            />
+
+            <Button
+              text="Submit Funds"
+              color="secondary"
+              onClick={this.onSubmitFunds}
+              danger
+            />
+          </div>
+        }
       </div>
     );
   }

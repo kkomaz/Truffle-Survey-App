@@ -4,16 +4,6 @@ import Button from '@material-ui/core/Button';
 import { omit } from 'lodash-es';
 import { dangerColor, whiteColor } from 'components/Colors';
 
-const style = {
-  danger: {
-    background: dangerColor,
-    color: whiteColor,
-  },
-  general: {
-    margin: '5px',
-  },
-};
-
 export const ButtonUI = (props) => {
   const buttonProps = omit(props, 'danger');
 
@@ -21,7 +11,7 @@ export const ButtonUI = (props) => {
     return (
       <Button
         {...buttonProps}
-        style={{ ...style.danger, ...style.general }}
+        style={{ ...props.style.danger, ...props.style.general }}
       >
         {props.text}
       </Button>
@@ -32,7 +22,7 @@ export const ButtonUI = (props) => {
     return (
       <Button
         {...buttonProps}
-        style={style.general}
+        style={props.style.general}
       >
         {props.text}
       </Button>
@@ -44,7 +34,7 @@ export const ButtonUI = (props) => {
       <Button
         {...buttonProps}
         variant="contained"
-        style={{ ...style.danger, ...style.general }}
+        style={{ ...props.style.danger, ...props.style.general }}
       >
         {props.text}
       </Button>
@@ -55,7 +45,7 @@ export const ButtonUI = (props) => {
     <Button
       {...buttonProps}
       variant="contained"
-      style={style.general}
+      style={props.style.general}
     >
       {props.text}
     </Button>
@@ -67,12 +57,22 @@ ButtonUI.propTypes = {
   danger: PropTypes.bool,
   text: PropTypes.string.isRequired,
   contained: PropTypes.bool,
+  style: PropTypes.object,
 };
 
 ButtonUI.defaultProps = {
   classes: {},
   danger: false,
   contained: true,
+  style: {
+    danger: {
+      background: dangerColor,
+      color: whiteColor,
+    },
+    general: {
+      margin: '5px',
+    },
+  },
 };
 
 export default ButtonUI;
