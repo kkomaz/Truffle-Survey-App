@@ -6,6 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Loader, Card, CardHeader, CardContent } from 'components';
 import getSurvey from 'actions/Survey/getSurvey';
 import getSurveyBalance from 'actions/Survey/getSurveyBalance';
+import getEthPrice from 'actions/Survey/getEthPrice';
 import SurveyCreateQuestions from './SurveyCreateQuestions';
 import SurveyShow from './SurveyShow';
 
@@ -18,6 +19,7 @@ class SurveyWrapper extends Component {
     surveyId: PropTypes.string.isRequired,
     accountId: PropTypes.string,
     getSurveyBalance: PropTypes.func.isRequired,
+    getEthPrice: PropTypes.func.isRequired,
   };
 
   componentDidMount = async () => {
@@ -26,6 +28,7 @@ class SurveyWrapper extends Component {
     if (isEmpty(surveyContract)) {
       const result = await this.props.getSurvey(surveyId, web3);
       await this.props.getSurveyBalance(result.contract, web3, surveyId);
+      await this.props.getEthPrice(result.contract, surveyId);
     }
   };
 
@@ -34,7 +37,8 @@ class SurveyWrapper extends Component {
 
     return isEmpty(surveyContract) ||
     (surveyContract &&
-      !surveyContract.balance
+      !surveyContract.balance &&
+      !surveyContract.ethPrice
     );
   }
 
@@ -116,5 +120,6 @@ export default connect(
   {
     getSurvey,
     getSurveyBalance,
+    getEthPrice,
   },
 )(SurveyWrapper);

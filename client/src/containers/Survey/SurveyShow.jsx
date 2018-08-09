@@ -25,14 +25,12 @@ class SurveyShow extends Component {
     );
     const owner = await surveyContract.methods.getOwner().call();
     const surveyRequiredCount = parseInt(await surveyContract.methods.getSurveyRequiredCount().call(), 10);
-    const ethPrice = await surveyContract.methods.getEthPrice().call();
 
     if (questionCount === 0) {
       return this.setState({
         questionCount,
         owner,
         surveyRequiredCount,
-        ethPrice,
       });
     }
 
@@ -59,7 +57,6 @@ class SurveyShow extends Component {
       surveyResultsFalse,
       participantCount,
       surveyRequiredCount,
-      ethPrice,
     });
   };
 
@@ -73,7 +70,6 @@ class SurveyShow extends Component {
       surveyResultsFalse,
       participantCount,
       surveyRequiredCount,
-      ethPrice,
     } = this.state;
 
     const {
@@ -109,7 +105,7 @@ class SurveyShow extends Component {
               <div className="survey-show__contract-details">
                 <p>{surveyContract.balance} Ether deposited</p>
                 <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>
-                <p>Current Eth Price: ${round(ethPrice, 2)}</p>
+                <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
               </div>
               <h4>No Questions Exist!</h4>
             </CardContent>
@@ -119,7 +115,7 @@ class SurveyShow extends Component {
                 {participantCount} / {surveyRequiredCount} surveys completed
                 <p>{surveyContract.balance} Ether deposited</p>
                 <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>
-                <p>Current Eth Price: ${round(ethPrice, 2)}</p>
+                <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
               </div>
 
               {enrolled ? (

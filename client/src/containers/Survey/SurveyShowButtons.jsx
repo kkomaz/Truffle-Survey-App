@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Button } from 'components';
 import TextField from '@material-ui/core/TextField';
+import setEthPrice from 'actions/Survey/setEthPrice';
 
 class SurveyShowButtons extends Component {
   static propTypes = {
@@ -12,6 +14,7 @@ class SurveyShowButtons extends Component {
     surveyContract: PropTypes.object.isRequired,
     accountId: PropTypes.string.isRequired,
     web3: PropTypes.object.isRequired,
+    setEthPrice: PropTypes.func.isRequired,
   }
 
   state = { amount: '', showFundInput: false };
@@ -56,23 +59,18 @@ class SurveyShowButtons extends Component {
   )
 
   updateEthPrice = async () => {
-    const { surveyContract, accountId } = this.props;
+    const { surveyContract, accountId, surveyId } = this.props;
 
-    try {
-      await surveyContract.methods
-        .updatePrice()
-        .send({
-          from: accountId,
-        });
-    } catch (e) {
-      console.log(e);
+    const result = await this.props.setEthPrice(surveyContract, accountId, surveyId);
+    if (result.success) {
+      this.setState({ requireRefresh: true });
     }
   }
 
 
   render() {
     const { questionCount } = this.props;
-    const { showFundInput } = this.state;
+    const { showFundInput, requireRefresh } = this.state;
 
     return (
       <div className="survey-show-buttons">
@@ -116,9 +114,17 @@ class SurveyShowButtons extends Component {
             />
           </div>
         }
+        {
+          requireRefresh &&
+          <p className="danger">
+            If price of ETH does not change, please refresh...
+          </p>
+        }
       </div>
     );
   }
 }
 
-export default withRouter(SurveyShowButtons);
+export default connect(null, {
+  setEthPrice,
+})(withRouter(SurveyShowButtons));

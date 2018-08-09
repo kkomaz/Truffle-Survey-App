@@ -1,6 +1,8 @@
 // Web3-Config Options
 export const SET_WEB3 = 'SET_WEB3';
 export const SET_CONTRACT_INSTANCE = 'SET_CONTRACT_INSTANCE';
+export const GET_ETH_PRICE = 'GET_ETH_PRICE';
+export const SET_ETH_PRICE = 'SET_ETH_PRICE';
 
 // Survey Actions
 export const SET_SURVEY_FACTORY_CONTRACT_INSTANCE = 'SET_SURVEY_FACTORY_CONTRACT_INSTANCE';
