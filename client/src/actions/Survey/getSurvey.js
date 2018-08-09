@@ -14,9 +14,10 @@ const getSurvey = (address, web3) => {
 
       return {
         success: true,
+        contract: result,
       };
-    } catch (err) {
-      return { err };
+    } catch (error) {
+      throw error;
     }
   };
 };

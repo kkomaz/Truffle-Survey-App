@@ -107,7 +107,7 @@ class SurveyShowForm extends Component {
               reset={reset}
               pristine={pristine}
               submitting={submitting}
-              onCancelClick={this.onCancelClick}
+              onCancelClick={() => console.log('something')}
             />
           </div>
         </div>

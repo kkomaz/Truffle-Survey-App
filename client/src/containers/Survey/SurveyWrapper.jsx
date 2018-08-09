@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash-es';
 import { Route, Switch } from 'react-router-dom';
 import { Loader, Card, CardHeader, CardContent } from 'components';
 import getSurvey from 'actions/Survey/getSurvey';
+import getSurveyBalance from 'actions/Survey/getSurveyBalance';
 import SurveyCreateQuestions from './SurveyCreateQuestions';
 import SurveyShow from './SurveyShow';
 
@@ -16,15 +17,26 @@ class SurveyWrapper extends Component {
     accounts: PropTypes.array.isRequired,
     surveyId: PropTypes.string.isRequired,
     accountId: PropTypes.string,
+    getSurveyBalance: PropTypes.func.isRequired,
   };
 
   componentDidMount = async () => {
     const { web3, surveyId, surveyContract } = this.props;
 
     if (isEmpty(surveyContract)) {
-      await this.props.getSurvey(surveyId, web3);
+      const result = await this.props.getSurvey(surveyId, web3);
+      await this.props.getSurveyBalance(result.contract, web3, surveyId);
     }
   };
+
+  isLoading() {
+    const { surveyContract } = this.props;
+
+    return isEmpty(surveyContract) ||
+    (surveyContract &&
+      !surveyContract.balance
+    );
+  }
 
   render() {
     const {
@@ -35,7 +47,7 @@ class SurveyWrapper extends Component {
       accountId,
     } = this.props;
 
-    if (isEmpty(surveyContract)) {
+    if (this.isLoading()) {
       return (
         <div className="container">
           <Card>
@@ -103,5 +115,6 @@ export default connect(
   mapStateToProps,
   {
     getSurvey,
+    getSurveyBalance,
   },
 )(SurveyWrapper);

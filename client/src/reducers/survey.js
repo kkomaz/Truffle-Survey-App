@@ -3,6 +3,7 @@ import {
   GET_SURVEYS,
   CREATE_SURVEY,
   GET_SURVEY,
+  GET_SURVEY_BALANCE,
 } from '../actions/constants';
 
 const defaultState = {
@@ -21,9 +22,11 @@ export default function surveyReducer(state = defaultState, action) {
       const ids = uniq(payload);
       return { ...state, ids };
     }
-
     case CREATE_SURVEY: {
       return { ...state, ids: [...state.ids, payload] };
+    }
+    case GET_SURVEY_BALANCE: {
+      return { ...state, [action.address]: { ...state[action.address], balance: payload } };
     }
     default: {
       return state;

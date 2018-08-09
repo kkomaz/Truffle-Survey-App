@@ -18,20 +18,17 @@ class SurveyShow extends Component {
   state = { questions: [] };
 
   componentDidMount = async () => {
-    const { surveyContract, accountId, web3 } = this.props;
+    const { surveyContract, accountId } = this.props;
     let allQuestions = [];
     const questionCount = convertToNumber(
       await surveyContract.methods.getQuestionCount().call(),
     );
     const owner = await surveyContract.methods.getOwner().call();
-    const balanceInWei = await surveyContract.methods.getBalance().call();
-    const balance = parseInt(web3.utils.fromWei(balanceInWei, 'ether'), 10);
     const surveyRequiredCount = parseInt(await surveyContract.methods.getSurveyRequiredCount().call(), 10);
     const ethPrice = await surveyContract.methods.getEthPrice().call();
 
     if (questionCount === 0) {
       return this.setState({
-        balance,
         questionCount,
         owner,
         surveyRequiredCount,
@@ -54,7 +51,6 @@ class SurveyShow extends Component {
     const enrolled = await surveyContract.methods.getParticipant(accountId).call();
 
     return this.setState({
-      balance,
       questions,
       questionCount,
       enrolled,
@@ -69,7 +65,6 @@ class SurveyShow extends Component {
 
   render() {
     const {
-      balance,
       questions,
       questionCount,
       enrolled,
@@ -81,7 +76,12 @@ class SurveyShow extends Component {
       ethPrice,
     } = this.state;
 
-    const { surveyId, accountId, surveyContract, web3 } = this.props;
+    const {
+      surveyId,
+      accountId,
+      surveyContract,
+      web3,
+    } = this.props;
 
     if (isUndefined(questionCount)) {
       return (
@@ -107,8 +107,8 @@ class SurveyShow extends Component {
                 />
               )}
               <div className="survey-show__contract-details">
-                <p>{balance} Ether deposited</p>
-                <p>Distribution Amount: {round((balance / surveyRequiredCount), 2)} Ether</p>
+                <p>{surveyContract.balance} Ether deposited</p>
+                <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>
                 <p>Current Eth Price: ${round(ethPrice, 2)}</p>
               </div>
               <h4>No Questions Exist!</h4>
@@ -117,8 +117,8 @@ class SurveyShow extends Component {
             <CardContent>
               <div className="survey-show__participation">
                 {participantCount} / {surveyRequiredCount} surveys completed
-                <p>{balance} Ether deposited</p>
-                <p>Distribution Amount: {round((balance / surveyRequiredCount), 2)} Ether</p>
+                <p>{surveyContract.balance} Ether deposited</p>
+                <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>
                 <p>Current Eth Price: ${round(ethPrice, 2)}</p>
               </div>
 

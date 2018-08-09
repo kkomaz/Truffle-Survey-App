@@ -5,7 +5,7 @@ import { omit } from 'lodash-es';
 import { dangerColor, whiteColor } from 'components/Colors';
 
 export const ButtonUI = (props) => {
-  const buttonProps = omit(props, 'danger');
+  const buttonProps = omit(props, 'danger', 'contained');
 
   if (props.danger && !props.contained) {
     return (
