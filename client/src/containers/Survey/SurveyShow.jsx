@@ -111,7 +111,16 @@ class SurveyShow extends Component {
             </CardContent>
           ) : (
             <CardContent>
-              <div className="survey-show__participation">
+              {owner === accountId && (
+                <SurveyShowButtons
+                  surveyId={surveyId}
+                  questionCount={questionCount}
+                  surveyContract={surveyContract}
+                  accountId={accountId}
+                  web3={web3}
+                />
+              )}
+              <div className="survey-show__contract-details">
                 {participantCount} / {surveyRequiredCount} surveys completed
                 <p>{surveyContract.balance} Ether deposited</p>
                 <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>

@@ -69,7 +69,7 @@ class SurveyShowButtons extends Component {
 
 
   render() {
-    const { questionCount } = this.props;
+    const { questionCount, surveyContract } = this.props;
     const { showFundInput, requireRefresh } = this.state;
 
     return (
@@ -79,7 +79,7 @@ class SurveyShowButtons extends Component {
             text="Create Questions"
             color="primary"
             onClick={this.onCreateQuestionClick}
-            disabled={questionCount > 0}
+            disabled={questionCount > 0 || surveyContract.balance === 0}
             style={{
               marginLeft: '0px',
             }}

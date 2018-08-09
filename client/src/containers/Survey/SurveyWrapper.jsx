@@ -35,11 +35,13 @@ class SurveyWrapper extends Component {
   isLoading() {
     const { surveyContract } = this.props;
 
-    return isEmpty(surveyContract) ||
-    (surveyContract &&
-      !surveyContract.balance &&
-      !surveyContract.ethPrice
-    );
+    return isEmpty(surveyContract);
+
+    // return isEmpty(surveyContract) ||
+    // (surveyContract &&
+    //   !surveyContract.balance &&
+    //   !surveyContract.ethPrice
+    // );
   }
 
   render() {
