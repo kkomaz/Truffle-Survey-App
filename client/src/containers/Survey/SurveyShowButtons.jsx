@@ -67,7 +67,6 @@ class SurveyShowButtons extends Component {
     }
   }
 
-
   render() {
     const { questionCount, surveyContract } = this.props;
     const { showFundInput, requireRefresh } = this.state;

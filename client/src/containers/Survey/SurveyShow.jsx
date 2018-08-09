@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardHeader, CardContent, CardLoader } from 'components';
+import { Card, CardHeader, CardContent, CardLoader, Button } from 'components';
+import { withRouter } from 'react-router-dom';
 import { range, isUndefined, map, round } from 'lodash-es';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyShowButtons from './SurveyShowButtons';
@@ -13,6 +14,7 @@ class SurveyShow extends Component {
     accountId: PropTypes.string.isRequired,
     surveyContract: PropTypes.object.isRequired,
     web3: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
   };
 
   state = { questions: [] };
@@ -59,6 +61,24 @@ class SurveyShow extends Component {
       surveyRequiredCount,
     });
   };
+
+  getParticipant = async () => {
+    const { surveyContract, accountId } = this.props;
+    await surveyContract.methods.getParticipant(accountId).call();
+  }
+
+  retrievePayment = async () => {
+    const { surveyContract, accountId } = this.props;
+
+    const result = await surveyContract.methods.payoutParticipant().send({
+      from: accountId,
+      gas: 3000000,
+    });
+
+    if (result) {
+      this.props.history.push('/');
+    }
+  }
 
   render() {
     const {
@@ -120,6 +140,18 @@ class SurveyShow extends Component {
                   web3={web3}
                 />
               )}
+
+              <Button
+                text="Retrieve Fund"
+                color="primary"
+                onClick={this.retrievePayment}
+                style={{
+                  general: {
+                    marginLeft: '0px',
+                  },
+                }}
+              />
+
               <div className="survey-show__contract-details">
                 {participantCount} / {surveyRequiredCount} surveys completed
                 <p>{surveyContract.balance} Ether deposited</p>
@@ -151,4 +183,4 @@ class SurveyShow extends Component {
   }
 }
 
-export default SurveyShow;
+export default withRouter(SurveyShow);
