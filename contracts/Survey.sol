@@ -1,11 +1,7 @@
 pragma solidity ^0.4.24;
+import "./usingOraclize.sol";
 
-contract Survey {
-    modifier participationCheck {
-        require(participantCount < surveyRequiredCount);
-        _;
-    }
-
+contract Survey is usingOraclize {
     struct Question {
         string ask;
         uint yes;
@@ -26,8 +22,22 @@ contract Survey {
     uint public participantCount;
     uint public distributeAmount;
 
+    // Oraclize Parameters
+    string public ETHUSD;
+    event LogConstructorInitiated(string nextStep);
+    event LogPriceUpdated(string price);
+    event LogNewOraclizeQuery(string description);
+
+    // Modifiers
+    modifier participationCheck {
+        require(participantCount < surveyRequiredCount);
+        _;
+    }
+
     constructor(address _owner) public {
         owner = _owner;
+        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+        emit  LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
     }
 
     function getQuestionCount() public view returns (uint) {
@@ -118,6 +128,25 @@ contract Survey {
         participants[msg.sender] = true;
         participantCount++;
         return true;
+    }
+
+    function __callback(bytes32 myid, string result) {
+        if (msg.sender != oraclize_cbAddress()) revert();
+        ETHUSD = result;
+        emit LogPriceUpdated(result);
+    }
+
+    function updatePrice() public payable {
+        if (oraclize_getPrice("URL") > address(this).balance) {
+            emit LogNewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+        } else {
+            emit LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+            oraclize_query("URL", "json(https://api.gdax.com/products/ETH-USD/ticker).price");
+        }
+    }
+
+    function getEthPrice() returns (string) {
+      return ETHUSD;
     }
 
     // Overloaded Functions

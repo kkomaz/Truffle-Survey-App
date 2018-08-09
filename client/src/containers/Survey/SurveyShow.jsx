@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardHeader, CardContent, CardLoader } from 'components';
-import { range, isUndefined, map } from 'lodash-es';
+import { range, isUndefined, map, round } from 'lodash-es';
 import convertToNumber from 'utils/convertToNumber';
 import SurveyShowButtons from './SurveyShowButtons';
 import SurveyShowForm from './SurveyShowForm';
@@ -12,28 +12,33 @@ class SurveyShow extends Component {
     surveyId: PropTypes.string.isRequired,
     accountId: PropTypes.string.isRequired,
     surveyContract: PropTypes.object.isRequired,
+    web3: PropTypes.object.isRequired,
   };
 
   state = { questions: [] };
 
   componentDidMount = async () => {
-    const { surveyContract, accountId } = this.props;
+    const { surveyContract, accountId, web3 } = this.props;
     let allQuestions = [];
     const questionCount = convertToNumber(
       await surveyContract.methods.getQuestionCount().call(),
     );
     const owner = await surveyContract.methods.getOwner().call();
+    const balanceInWei = await surveyContract.methods.getBalance().call();
+    const balance = parseInt(web3.utils.fromWei(balanceInWei, 'ether'), 10);
+    const surveyRequiredCount = parseInt(await surveyContract.methods.getSurveyRequiredCount().call(), 10);
 
     if (questionCount === 0) {
       return this.setState({
+        balance,
         questionCount,
         owner,
+        surveyRequiredCount,
       });
     }
 
     const surveyResultsTrue = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
     const surveyResultsFalse = map(await surveyContract.methods.getResults(false).call(), i => convertToNumber(i));
-    const surveyRequiredCount = await surveyContract.methods.getSurveyRequiredCount().call();
 
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()
@@ -47,6 +52,7 @@ class SurveyShow extends Component {
     const enrolled = await surveyContract.methods.getParticipant(accountId).call();
 
     return this.setState({
+      balance,
       questions,
       questionCount,
       enrolled,
@@ -59,8 +65,19 @@ class SurveyShow extends Component {
   };
 
   render() {
-    const { questions, questionCount, enrolled, owner, surveyResultsTrue, surveyResultsFalse, participantCount, surveyRequiredCount } = this.state;
-    const { surveyId, accountId, surveyContract } = this.props;
+    const {
+      balance,
+      questions,
+      questionCount,
+      enrolled,
+      owner,
+      surveyResultsTrue,
+      surveyResultsFalse,
+      participantCount,
+      surveyRequiredCount,
+    } = this.state;
+
+    const { surveyId, accountId, surveyContract, web3 } = this.props;
 
     if (isUndefined(questionCount)) {
       return (
@@ -76,10 +93,17 @@ class SurveyShow extends Component {
           <CardHeader title={surveyId} subheader={enrolled ? 'Already applied - Display Only' : ''} />
           {questionCount === 0 ? (
             <CardContent>
+              <div className="survey-show__finance">
+                <p>{balance} Ether deposited</p>
+                <p>Distribution Amount: {round((balance / surveyRequiredCount), 2)} Ether</p>
+              </div>
               {owner === accountId && (
                 <SurveyShowButtons
                   surveyId={surveyId}
                   questionCount={questionCount}
+                  surveyContract={surveyContract}
+                  accountId={accountId}
+                  web3={web3}
                 />
               )}
               <h4>No Questions Exist!</h4>

@@ -14,6 +14,7 @@ import SubmissionButtons from './Forms/SubmissionButtons';
 import Switch from './Forms/Switch';
 import Select from './Forms/Select';
 import AppBar from './Display/AppBar';
+import TextField from './Forms/TextField';
 
 export {
   AppBar,
@@ -32,4 +33,5 @@ export {
   SubmissionButtons,
   Switch,
   Select,
+  TextField,
 };
