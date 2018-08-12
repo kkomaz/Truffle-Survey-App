@@ -141,16 +141,20 @@ class SurveyShow extends Component {
                 />
               )}
 
-              <Button
-                text="Retrieve Fund"
-                color="primary"
-                onClick={this.retrievePayment}
-                style={{
-                  general: {
-                    marginLeft: '0px',
-                  },
-                }}
-              />
+              {
+                enrolled &&
+                <Button
+                  text="Retrieve Fund"
+                  color="primary"
+                  onClick={this.retrievePayment}
+                  style={{
+                    general: {
+                      marginLeft: '0px',
+                    },
+                  }}
+                  disabled={surveyRequiredCount !== participantCount}
+                />
+              }
 
               <div className="survey-show__contract-details">
                 {participantCount} / {surveyRequiredCount} surveys completed

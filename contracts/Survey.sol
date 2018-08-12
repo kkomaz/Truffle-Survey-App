@@ -21,6 +21,7 @@ contract Survey is usingOraclize {
     uint public questionCount;
     uint public participantCount;
     uint public distributeAmount;
+    uint public depositAmount;
 
     // Oraclize Parameters
     string public ETHUSD;
@@ -95,11 +96,13 @@ contract Survey is usingOraclize {
     function depositRewardAmount() public payable {
         require(msg.sender == owner);
 
+        depositAmount += msg.value;
         distributeAmount = msg.value / surveyRequiredCount;
     }
 
     function payoutParticipant() public returns (bool) {
         require(participantCount == surveyRequiredCount);
+
         if (participants[msg.sender]) {
             participants[msg.sender] = false;
 
