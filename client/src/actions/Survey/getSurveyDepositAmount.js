@@ -1,13 +1,13 @@
-import { GET_SURVEY_BALANCE } from '../constants';
+import { GET_SURVEY_DEPOSIT_AMOUNT } from '../constants';
 
-const getSurveyBalance = (surveyContract, web3, surveyId) => (
+const getSurveyDepositAmount = (surveyContract, web3, surveyId) => (
   async (dispatch) => {
     try {
-      const balanceInWei = await surveyContract.methods.getBalance().call();
+      const balanceInWei = await surveyContract.methods.getDepositAmount().call();
       const balance = parseFloat(web3.utils.fromWei(balanceInWei, 'ether'), 10).toFixed(2);
 
       dispatch({
-        type: GET_SURVEY_BALANCE,
+        type: GET_SURVEY_DEPOSIT_AMOUNT,
         payload: balance,
         address: surveyId,
       });
@@ -21,4 +21,4 @@ const getSurveyBalance = (surveyContract, web3, surveyId) => (
   }
 );
 
-export default getSurveyBalance;
+export default getSurveyDepositAmount;

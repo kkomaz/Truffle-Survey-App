@@ -123,8 +123,9 @@ class SurveyShow extends Component {
                 />
               )}
               <div className="survey-show__contract-details">
-                <p>{surveyContract.balance} Ether deposited</p>
-                <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>
+                <p>{surveyContract.depositAmount} Ether deposited</p>
+                <p>Current Balance in Contract: {surveyContract.balance} Ether</p>
+                <p>Distribution Amount: {round((surveyContract.depositAmount / surveyRequiredCount), 2)} Ether</p>
                 <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
               </div>
               <h4>No Questions Exist!</h4>
@@ -158,12 +159,13 @@ class SurveyShow extends Component {
 
               <div className="survey-show__contract-details">
                 {participantCount} / {surveyRequiredCount} surveys completed
-                <p>{surveyContract.balance} Ether deposited</p>
-                <p>Distribution Amount: {round((surveyContract.balance / surveyRequiredCount), 2)} Ether</p>
+                <p>{surveyContract.depositAmount} Ether deposited</p>
+                <p>Current Balance in Contract: {surveyContract.balance} Ether</p>
+                <p>Distribution Amount: {round((surveyContract.depositAmount / surveyRequiredCount), 2)} Ether</p>
                 <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
               </div>
 
-              {enrolled ? (
+              {(enrolled || participantCount === surveyRequiredCount) ? (
                 <SurveyShowDisplay
                   questions={questions}
                   surveyResultsTrue={surveyResultsTrue}

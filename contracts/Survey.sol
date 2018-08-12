@@ -89,6 +89,10 @@ contract Survey is usingOraclize {
         return address(this).balance;
     }
 
+    function getDepositAmount() public view returns (uint) {
+      return depositAmount;
+    }
+
     function getRemainingSurveyCount() public view returns (uint) {
         return surveyRequiredCount - participantCount;
     }

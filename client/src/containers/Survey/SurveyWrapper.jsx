@@ -7,6 +7,9 @@ import { Loader, Card, CardHeader, CardContent } from 'components';
 import getSurvey from 'actions/Survey/getSurvey';
 import getSurveyBalance from 'actions/Survey/getSurveyBalance';
 import getEthPrice from 'actions/Survey/getEthPrice';
+import {
+  getSurveyDepositAmount,
+} from 'actions/Survey';
 import SurveyCreateQuestions from './SurveyCreateQuestions';
 import SurveyShow from './SurveyShow';
 
@@ -20,6 +23,7 @@ class SurveyWrapper extends Component {
     accountId: PropTypes.string,
     getSurveyBalance: PropTypes.func.isRequired,
     getEthPrice: PropTypes.func.isRequired,
+    getSurveyDepositAmount: PropTypes.func.isRequired,
   };
 
   componentDidMount = async () => {
@@ -29,6 +33,7 @@ class SurveyWrapper extends Component {
       const result = await this.props.getSurvey(surveyId, web3);
       await this.props.getSurveyBalance(result.contract, web3, surveyId);
       await this.props.getEthPrice(result.contract, surveyId);
+      await this.props.getSurveyDepositAmount(result.contract, web3, surveyId);
     }
   };
 
@@ -123,5 +128,6 @@ export default connect(
     getSurvey,
     getSurveyBalance,
     getEthPrice,
+    getSurveyDepositAmount,
   },
 )(SurveyWrapper);
