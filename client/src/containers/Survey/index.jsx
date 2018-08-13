@@ -15,10 +15,10 @@ import {
 } from 'components';
 import InboxIcon from '@material-ui/icons/Inbox';
 import { withRouter } from 'react-router-dom';
+import notifier from 'components/Display/Notifier';
 import setContractInstance from '../../actions/Contract/setContractInstance';
 import getSurveys from '../../actions/Survey/getSurveys';
 import createSurvey from '../../actions/Survey/createSurvey';
-
 
 class Surveys extends Component {
   static propTypes = {
@@ -29,6 +29,7 @@ class Surveys extends Component {
     createSurvey: PropTypes.func.isRequired,
     accountId: PropTypes.string.isRequired,
     web3: PropTypes.object.isRequired,
+    generate: PropTypes.func.isRequired,
   };
 
   state = { loading: true };
@@ -58,12 +59,12 @@ class Surveys extends Component {
         this.props.history.push(`/surveys/${result.address}/show`);
       }
     } catch (error) {
-      console.log(error.message);
+      this.props.generate('danger', error.message);
     }
   };
 
   render() {
-    const { surveyIds, web3 } = this.props;
+    const { surveyIds } = this.props;
 
     if (isEmpty(surveyIds)) {
       return (
@@ -134,4 +135,4 @@ export default connect(
     getSurveys,
     createSurvey,
   },
-)(withRouter(Surveys));
+)(withRouter(notifier(Surveys)));
