@@ -1,7 +1,8 @@
+import txMineCompleted from 'utils/txMineCompleted';
 import { CREATE_SURVEY } from '../constants';
 
-const createSurvey = (contract, accountId) => {
-  return async (dispatch) => {
+const createSurvey = (contract, web3, accountId) => (
+  async (dispatch) => {
     try {
       const request = await contract.methods
         .createSurvey()
@@ -9,23 +10,27 @@ const createSurvey = (contract, accountId) => {
           from: accountId,
         });
 
-      const result = await contract.methods.getLastSurvey(accountId).call();
+      const tx = request.transactionHash;
 
-      dispatch({
-        type: CREATE_SURVEY,
-        payload: result,
-      });
+      if (txMineCompleted(web3, tx)) {
+        const address = await contract.methods.getLastSurvey(accountId).call();
 
-      return {
-        success: true,
-        address: result,
-        request,
-      };
+        dispatch({
+          type: CREATE_SURVEY,
+          payload: address,
+        });
+
+        return {
+          success: true,
+          address,
+        };
+      }
+
+      return null;
     } catch (error) {
-      // Dispatch Notifier
       throw error;
     }
-  };
-};
+  }
+);
 
 export default createSurvey;

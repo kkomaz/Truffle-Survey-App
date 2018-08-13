@@ -28,6 +28,7 @@ class Surveys extends Component {
     history: PropTypes.object.isRequired,
     createSurvey: PropTypes.func.isRequired,
     accountId: PropTypes.string.isRequired,
+    web3: PropTypes.object.isRequired,
   };
 
   state = { loading: true };
@@ -48,12 +49,12 @@ class Surveys extends Component {
   };
 
   createSurvey = async () => {
-    const { surveyFactoryContract, accountId } = this.props;
+    const { surveyFactoryContract, accountId, web3 } = this.props;
 
     try {
-      const result = await this.props.createSurvey(surveyFactoryContract, accountId);
+      const result = await this.props.createSurvey(surveyFactoryContract, web3, accountId);
 
-      if (result.address) {
+      if (result.success) {
         this.props.history.push(`/surveys/${result.address}/show`);
       }
     } catch (error) {
@@ -62,7 +63,7 @@ class Surveys extends Component {
   };
 
   render() {
-    const { surveyIds } = this.props;
+    const { surveyIds, web3 } = this.props;
 
     if (isEmpty(surveyIds)) {
       return (
