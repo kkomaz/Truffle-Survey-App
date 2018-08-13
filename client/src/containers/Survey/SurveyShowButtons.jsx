@@ -15,6 +15,8 @@ class SurveyShowButtons extends Component {
     accountId: PropTypes.string.isRequired,
     web3: PropTypes.object.isRequired,
     setEthPrice: PropTypes.func.isRequired,
+    surveyRequiredCount: PropTypes.number.isRequired,
+    participantCount: PropTypes.number.isRequired,
   }
 
   state = { amount: '', showFundInput: false };
@@ -68,7 +70,7 @@ class SurveyShowButtons extends Component {
   }
 
   render() {
-    const { questionCount, surveyContract } = this.props;
+    const { questionCount, surveyContract, surveyRequiredCount, participantCount } = this.props;
     const { showFundInput, requireRefresh } = this.state;
 
     return (
@@ -87,6 +89,7 @@ class SurveyShowButtons extends Component {
             text="Add Funds"
             color="secondary"
             onClick={this.onAddFunds}
+            disabled={surveyRequiredCount === participantCount}
           />
           <Button
             text="Update Eth Price"

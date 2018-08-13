@@ -17,7 +17,7 @@ class SurveyShow extends Component {
     history: PropTypes.object.isRequired,
   };
 
-  state = { questions: [] };
+  state = { questions: [], subheaderText: '' };
 
   componentDidMount = async () => {
     const { surveyContract, accountId } = this.props;
@@ -27,21 +27,21 @@ class SurveyShow extends Component {
     );
     const owner = await surveyContract.methods.getOwner().call();
     const surveyRequiredCount = parseInt(await surveyContract.methods.getSurveyRequiredCount().call(), 10);
+    const participantCount = convertToNumber(await surveyContract.methods
+      .getParticipantCount()
+      .call());
 
     if (questionCount === 0) {
       return this.setState({
         questionCount,
         owner,
         surveyRequiredCount,
+        participantCount,
       });
     }
 
     const surveyResultsTrue = map(await surveyContract.methods.getResults(true).call(), i => convertToNumber(i));
     const surveyResultsFalse = map(await surveyContract.methods.getResults(false).call(), i => convertToNumber(i));
-
-    const participantCount = convertToNumber(await surveyContract.methods
-      .getParticipantCount()
-      .call());
     const rangeQuestionCount = range(questionCount);
     allQuestions = await surveyContract.methods
       .returnAllQuestions(...rangeQuestionCount)
@@ -49,6 +49,13 @@ class SurveyShow extends Component {
 
     const questions = typeof (allQuestions) === 'string' ? [allQuestions] : Object.values(allQuestions);
     const enrolled = await surveyContract.methods.getParticipant(accountId).call();
+    const subheaderText = () => {
+      if (surveyRequiredCount === participantCount) {
+        return 'Survey is officially completed!';
+      }
+
+      return enrolled ? 'Already applied - Display Only' : '';
+    };
 
     return this.setState({
       questions,
@@ -59,6 +66,7 @@ class SurveyShow extends Component {
       surveyResultsFalse,
       participantCount,
       surveyRequiredCount,
+      subheaderText: subheaderText(),
     });
   };
 
@@ -90,6 +98,7 @@ class SurveyShow extends Component {
       surveyResultsFalse,
       participantCount,
       surveyRequiredCount,
+      subheaderText,
     } = this.state;
 
     const {
@@ -109,81 +118,74 @@ class SurveyShow extends Component {
 
     return (
       <div className="survey-show container">
-        <Card>
-          <CardHeader title={surveyId} subheader={enrolled ? 'Already applied - Display Only' : ''} />
-          {questionCount === 0 ? (
-            <CardContent>
-              {owner === accountId && (
-                <SurveyShowButtons
-                  surveyId={surveyId}
-                  questionCount={questionCount}
-                  surveyContract={surveyContract}
-                  accountId={accountId}
-                  web3={web3}
-                />
-              )}
-              <div className="survey-show__contract-details">
-                <p>{surveyContract.depositAmount} Ether deposited</p>
-                <p>Current Balance in Contract: {surveyContract.balance} Ether</p>
-                <p>Distribution Amount: {round((surveyContract.depositAmount / surveyRequiredCount), 2)} Ether</p>
-                <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
-              </div>
-              <h4>No Questions Exist!</h4>
-            </CardContent>
-          ) : (
-            <CardContent>
-              {owner === accountId && (
-                <SurveyShowButtons
-                  surveyId={surveyId}
-                  questionCount={questionCount}
-                  surveyContract={surveyContract}
-                  accountId={accountId}
-                  web3={web3}
-                />
-              )}
+        <div className="row">
+          <div className="col-xs-12 col-sm-6">
+            <Card>
+              <CardHeader title="Survey Questions" subheader={subheaderText} />
+              <CardContent>
+                {
+                  enrolled &&
+                  <Button
+                    text="Retrieve Fund"
+                    color="primary"
+                    onClick={this.retrievePayment}
+                    style={{
+                      general: {
+                        marginLeft: '0px',
+                      },
+                    }}
+                    disabled={surveyRequiredCount !== participantCount}
+                  />
+                }
 
-              {
-                enrolled &&
-                <Button
-                  text="Retrieve Fund"
-                  color="primary"
-                  onClick={this.retrievePayment}
-                  style={{
-                    general: {
-                      marginLeft: '0px',
-                    },
-                  }}
-                  disabled={surveyRequiredCount !== participantCount}
-                />
-              }
+                {(enrolled || questionCount === 0 || participantCount === surveyRequiredCount) ? (
+                  <SurveyShowDisplay
+                    questions={questions}
+                    surveyResultsTrue={surveyResultsTrue}
+                    surveyResultsFalse={surveyResultsFalse}
+                    questionCount={questionCount}
+                    surveyRequiredCount={surveyRequiredCount}
+                    participantCount={participantCount}
+                  />
+                ) : (
+                  <SurveyShowForm
+                    questions={questions}
+                    accountId={accountId}
+                    surveyContract={surveyContract}
+                    surveyResultsTrue={surveyResultsTrue}
+                    surveyResultsFalse={surveyResultsFalse}
+                    participantCount={participantCount}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-              <div className="survey-show__contract-details">
-                {participantCount} / {surveyRequiredCount} surveys completed
-                <p>{surveyContract.depositAmount} Ether deposited</p>
-                <p>Current Balance in Contract: {surveyContract.balance} Ether</p>
-                <p>Distribution Amount: {round((surveyContract.depositAmount / surveyRequiredCount), 2)} Ether</p>
-                <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
-              </div>
-
-              {(enrolled || participantCount === surveyRequiredCount) ? (
-                <SurveyShowDisplay
-                  questions={questions}
-                  surveyResultsTrue={surveyResultsTrue}
-                  surveyResultsFalse={surveyResultsFalse}
-                />
-              ) : (
-                <SurveyShowForm
-                  questions={questions}
-                  accountId={accountId}
-                  surveyContract={surveyContract}
-                  surveyResultsTrue={surveyResultsTrue}
-                  surveyResultsFalse={surveyResultsFalse}
-                  participantCount={participantCount}
-                />
-              )}
-            </CardContent>
-          )}
-        </Card>
+          <div className="col-xs-12 col-sm-6">
+            <Card>
+              <CardHeader title="Survey Information" />
+              <CardContent>
+                <div className="survey-show__contract-details">
+                  {owner === accountId && (
+                    <SurveyShowButtons
+                      surveyId={surveyId}
+                      questionCount={questionCount}
+                      surveyContract={surveyContract}
+                      accountId={accountId}
+                      web3={web3}
+                    />
+                  )}
+                  <p>Survey Address: {surveyId}</p>
+                  {participantCount} / {surveyRequiredCount} surveys completed
+                  <p>{surveyContract.depositAmount} Ether deposited</p>
+                  <p>Current Balance in Contract: {surveyContract.balance} Ether</p>
+                  <p>Distribution Amount: {round((surveyContract.depositAmount / surveyRequiredCount), 2)} Ether</p>
+                  <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }

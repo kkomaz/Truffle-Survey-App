@@ -30,7 +30,7 @@ class App extends Component {
     web3: PropTypes.object.isRequired,
     setWeb3: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
-    accountId: PropTypes.string.isRequired,
+    accountId: PropTypes.string,
   };
 
   state = { loading: true };
@@ -78,6 +78,10 @@ class App extends Component {
     );
   }
 }
+
+App.defaultProps = {
+  accountId: '',
+};
 
 function mapStateToProps(state) {
   return {

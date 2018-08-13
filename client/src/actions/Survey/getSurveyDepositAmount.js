@@ -4,7 +4,8 @@ const getSurveyDepositAmount = (surveyContract, web3, surveyId) => (
   async (dispatch) => {
     try {
       const balanceInWei = await surveyContract.methods.getDepositAmount().call();
-      const balance = parseFloat(web3.utils.fromWei(balanceInWei, 'ether'), 10).toFixed(2);
+      const balanceInEther = parseFloat(web3.utils.fromWei(balanceInWei, 'ether')).toFixed(2);
+      const balance = parseFloat(balanceInEther);
 
       dispatch({
         type: GET_SURVEY_DEPOSIT_AMOUNT,

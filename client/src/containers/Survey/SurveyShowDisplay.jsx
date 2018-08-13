@@ -6,12 +6,26 @@ import { List, ListItem, ListItemText } from 'components';
 class SurveyShowDisplay extends Component {
   static propTypes = {
     questions: PropTypes.array.isRequired,
-    surveyResultsTrue: PropTypes.array.isRequired,
-    surveyResultsFalse: PropTypes.array.isRequired,
+    surveyResultsTrue: PropTypes.array,
+    surveyResultsFalse: PropTypes.array,
+    questionCount: PropTypes.number.isRequired,
   };
 
   render() {
-    const { questions, surveyResultsTrue, surveyResultsFalse } = this.props;
+    const {
+      questions,
+      surveyResultsTrue,
+      surveyResultsFalse,
+      questionCount,
+    } = this.props;
+
+    if (questionCount === 0) {
+      return (
+        <div className="survey-show-display">
+          <h4>No Questions Exist!</h4>
+        </div>
+      );
+    }
 
     return (
       <div className="survey-show-display">
@@ -35,5 +49,10 @@ class SurveyShowDisplay extends Component {
     );
   }
 }
+
+SurveyShowDisplay.defaultProps = {
+  surveyResultsTrue: [],
+  surveyResultsFalse: [],
+};
 
 export default SurveyShowDisplay;
