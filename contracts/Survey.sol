@@ -35,6 +35,11 @@ contract Survey is usingOraclize {
         _;
     }
 
+    modifier isOwner {
+      require(msg.sender == owner);
+      _;
+    }
+
     constructor(address _owner) public {
         owner = _owner;
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
@@ -97,9 +102,7 @@ contract Survey is usingOraclize {
         return surveyRequiredCount - participantCount;
     }
 
-    function depositRewardAmount() public payable {
-        require(msg.sender == owner);
-
+    function depositRewardAmount() public payable isOwner {
         depositAmount += msg.value;
         distributeAmount = msg.value / surveyRequiredCount;
     }
@@ -157,7 +160,7 @@ contract Survey is usingOraclize {
     }
 
     // Overloaded Functions
-    function createQuestion(string _ask) public returns (bool) {
+    function createQuestion(string _ask) public isOwner returns (bool) {
         Question memory newQuestion = Question({
            ask:  _ask,
            yes: 0,
@@ -169,7 +172,7 @@ contract Survey is usingOraclize {
         return true;
     }
 
-    function createQuestion(string _ask1, string _ask2) public returns (bool) {
+    function createQuestion(string _ask1, string _ask2) isOwner public returns (bool) {
         string[] memory a = new string[](2);
         a[0] = _ask1;
         a[1] = _ask2;
@@ -187,7 +190,7 @@ contract Survey is usingOraclize {
         return true;
     }
 
-    function createQuestion(string _ask1, string _ask2, string _ask3) public returns (bool) {
+    function createQuestion(string _ask1, string _ask2, string _ask3) isOwner public returns (bool) {
         string[] memory a = new string[](3);
         a[0] = _ask1;
         a[1] = _ask2;
@@ -206,7 +209,7 @@ contract Survey is usingOraclize {
         return true;
     }
 
-    function createQuestion(string _ask1, string _ask2, string _ask3, string _ask4) public returns (bool) {
+    function createQuestion(string _ask1, string _ask2, string _ask3, string _ask4) isOwner public returns (bool) {
         string[] memory a = new string[](4);
         a[0] = _ask1;
         a[1] = _ask2;
