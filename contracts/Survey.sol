@@ -10,7 +10,7 @@ contract Survey is usingOraclize {
 
     address public owner;
     // Constants restrictions to question and survey
-    uint public constant questionLimit = 5;
+    uint public constant questionLimit = 4;
     uint public constant surveyRequiredCount = 3;
 
     // Question detail parameters
@@ -30,9 +30,18 @@ contract Survey is usingOraclize {
     event LogNewOraclizeQuery(string description);
 
     // Modifiers
+    modifier surveyCompleted {
+      require(participantCount == surveyRequiredCount);
+      _;
+    }
+
+    modifier validParticipant {
+      require(participants[msg.sender]);
+      _;
+    }
     modifier participationCheck {
-        require(participantCount < surveyRequiredCount);
-        _;
+      require(participantCount < surveyRequiredCount);
+      _;
     }
 
     modifier isOwner {
@@ -107,7 +116,7 @@ contract Survey is usingOraclize {
         distributeAmount = msg.value / surveyRequiredCount;
     }
 
-    function payoutParticipant() public returns (bool) {
+    function payoutParticipant()  public validParticipant surveyCompleted returns (bool) {
         require(participantCount == surveyRequiredCount);
 
         if (participants[msg.sender]) {

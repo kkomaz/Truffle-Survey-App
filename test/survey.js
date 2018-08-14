@@ -1,28 +1,112 @@
-const Survey = require('../build/contracts/Survey.json');
-const SurveyFactory = artifacts.require('./SurveyFactory.sol');
+const Survey = artifacts.require('./Survey.sol');
 
-contract('SurveyFactory', async (accounts) => {
-  let SurveyFactoryInstance;
-  let surveyIds;
+contract('Survey', async (accounts) => {
+  describe('Owner creates a question', () => {
+    var contract;
+    var sendAmt = 10;
+    var owner   = accounts[0];
+    var sender  = accounts[1];
+    var sender2 = accounts[2];
+    var sender3 = accounts[3];
+    var sender4 = accounts[4];
 
-  beforeEach(async () => {
-    SurveyFactoryInstance = await SurveyFactory.deployed();
-  })
-
-
-  it('should create and add the survey address to the deployedSurvey array', async () => {
-    await SurveyFactoryInstance.createSurvey({
-      from: accounts[0],
+    before(function() {
+      return Survey.new(owner, { from: owner })
+      .then((instance) => {
+         contract = instance;
+         contract.depositRewardAmount({
+           from: owner,
+           value: sendAmt,
+         });
+      });
     });
 
-    surveyIds = await SurveyFactoryInstance.contract.getDeployedSurveys(accounts[0]);
-    assert.equal(1, surveyIds.length, 'length does not match');
-  });
+    it('returns the owner', async () => {
+      const currentOwner = await contract.getOwner();
+      assert.equal(currentOwner, owner, 'Owner address does not match');
+    });
 
-  it('should match the last survey address to the function call', async () => {
-    const surveyId = await SurveyFactoryInstance.contract.getLastSurvey(accounts[0]);
+    it('returns the deposit amount', async () => {
+      const currentDepositAmount = await contract.getBalance();
+      assert.equal(currentDepositAmount.c[0], sendAmt, 'deposit invalid');
+    });
 
-    assert.equal(surveyIds[0], surveyId, 'ids do not match');
-    assert.equal(1, surveyIds.length, 'length does not match');
+    it('returns the proper questionCount', async () => {
+      await contract.createQuestion('Q1', 'Q2', {
+        from: owner,
+      });
+
+      const questionCount = await contract.getQuestionCount();
+      assert.equal(questionCount.c[0], 2, 'Wrong # of questions created');
+    });
+
+    it('gives answers and confirms survey is closed', async () => {
+      await contract.giveAnswers([true, true], {
+        from: sender
+      });
+      await contract.giveAnswers([true, false], {
+        from: sender2
+      });
+      await contract.giveAnswers([false, false], {
+        from: sender3
+      });
+
+      const remainingSurveyCount = await contract.getRemainingSurveyCount();
+      assert.equal(remainingSurveyCount.c[0], 0, 'Survey should be completed');
+    });
+
+    it('gives the correct results', async () => {
+      const yesResults = await contract.getResults(true);
+      const noResults = await contract.getResults(false);
+
+      const yesArray = yesResults.map((yes) => yes.c[0]);
+      const noArray = noResults.map((no) => no.c[0]);
+
+      assert.equal(yesArray[0], 2, 'invalid result');
+      assert.equal(yesArray[1], 1, 'invalid result');
+      assert.equal(noArray[0], 1, 'invalid result');
+      assert.equal(noArray[1], 2, 'invalid result');
+    });
+
+    it('marks the correct participants', async () => {
+      const participantInfo = await contract.getParticipant(sender);
+      const participantInfo2 = await contract.getParticipant(sender2);
+      const participantInfo3 = await contract.getParticipant(sender3);
+      const participantInfo4 = await contract.getParticipant(sender4);
+
+      assert.isTrue(participantInfo);
+      assert.isTrue(participantInfo2);
+      assert.isTrue(participantInfo3);
+      assert.isFalse(participantInfo4);
+    });
+
+    it('does not payout due to invalid user', async () => {
+      let errorMessage;
+
+      try {
+        await contract.payoutParticipant({
+          from: sender4,
+        });
+      } catch (error) {
+        assert(error);
+
+        const contractBalance = (await contract.getBalance()).c[0];
+        assert.equal(contractBalance, sendAmt);
+      }
+    });
+
+    it('pays out participant', async () => {
+      const contractBalance = (await contract.getBalance()).c[0];
+
+      const result = await contract.payoutParticipant({
+        from: sender,
+      });
+
+      const newBalance = (await contract.getBalance()).c[0];
+      const participantInfo = await contract.getParticipant(sender);
+
+      assert.isBelow(newBalance, contractBalance);
+      assert.isFalse(participantInfo);
+    });
   });
 });
