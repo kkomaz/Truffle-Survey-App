@@ -117,8 +117,10 @@ contract Survey is usingOraclize, CircuitBreaker {
     }
 
     function depositRewardAmount() public payable isOwner {
+        require(depositAmount >= depositAmount + msg.value); // integer overflow
+
         depositAmount += msg.value;
-        distributeAmount = msg.value / surveyRequiredCount;
+        distributeAmount = depositAmount / surveyRequiredCount;
     }
 
     function payoutParticipant()  public validParticipant surveyCompleted stop_if_emergency returns (bool) {

@@ -77,7 +77,7 @@ npm run start
 
 5. Browser should be running on localhost:3000
 
-## Design Patterns
+## Design Patterns // Security
 
 ### Favor pull over push for external calls
 #### Explanation
@@ -132,6 +132,19 @@ function payoutParticipant()  public validParticipant surveyCompleted stop_if_em
     }
 
     return false;
+}
+```
+### Integer overflow
+#### Explanation
+- Though highly unlikely, in the case the deposit amount (since the owner can put more if he likes) is an input.  Must be careful that it doesn't overflow and hit zero
+
+#### Code
+```
+function depositRewardAmount() public payable isOwner {
+    require(depositAmount >= depositAmount + msg.value); // integer overflow
+
+    depositAmount += msg.value;
+    distributeAmount = depositAmount / surveyRequiredCount;
 }
 ```
 
