@@ -37,25 +37,7 @@ class Home extends Component {
     const { surveyFactoryContract, accounts } = this.props;
 
     await this.props.getSurveys(surveyFactoryContract, accounts);
-
-    // Event focused function
-    // const result = await this.props.getSurveys(surveyFactoryContract, accounts);
-    // if (result.success) {
-    //   this.getEvents();
-    // }
   }
-
-  // getEvents() {
-  //   const { surveyFactoryContract } = this.props;
-  //
-  //   surveyFactoryContract.events.allEvents((err, res) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       console.log(res, 'res');
-  //     }
-  //   });
-  // }
 
   render() {
     const { surveyIds } = this.props;
