@@ -1,7 +1,8 @@
 pragma solidity ^0.4.24;
 import "./usingOraclize.sol";
+import "./CircuitBreaker.sol";
 
-contract Survey is usingOraclize {
+contract Survey is usingOraclize, CircuitBreaker {
     struct Question {
         string ask;
         uint yes;
@@ -53,6 +54,10 @@ contract Survey is usingOraclize {
         owner = _owner;
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
         emit  LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
+    }
+
+    function getStopped() public view returns (bool) {
+      return stopped;
     }
 
     function getQuestionCount() public view returns (uint) {
@@ -116,7 +121,7 @@ contract Survey is usingOraclize {
         distributeAmount = msg.value / surveyRequiredCount;
     }
 
-    function payoutParticipant()  public validParticipant surveyCompleted returns (bool) {
+    function payoutParticipant()  public validParticipant surveyCompleted stop_if_emergency returns (bool) {
         require(participantCount == surveyRequiredCount);
 
         if (participants[msg.sender]) {
