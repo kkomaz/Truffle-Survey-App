@@ -32,22 +32,22 @@ contract('Survey', async (accounts) => {
     });
 
     it('returns the proper questionCount', async () => {
-      await contract.createQuestion('Q1', 'Q2', {
+      await contract.createQuestion('Q1', 'Q2', 'Q3', {
         from: owner,
       });
 
       const questionCount = await contract.getQuestionCount();
-      assert.equal(questionCount.c[0], 2, 'Wrong # of questions created');
+      assert.equal(questionCount.c[0], 3, 'Wrong # of questions created');
     });
 
     it('gives answers and confirms survey is closed', async () => {
-      await contract.giveAnswers([true, true], {
+      await contract.giveAnswers([true, true, true], {
         from: sender
       });
-      await contract.giveAnswers([true, false], {
+      await contract.giveAnswers([true, false, false], {
         from: sender2
       });
-      await contract.giveAnswers([false, false], {
+      await contract.giveAnswers([false, false, false], {
         from: sender3
       });
 
@@ -64,8 +64,10 @@ contract('Survey', async (accounts) => {
 
       assert.equal(yesArray[0], 2, 'invalid result');
       assert.equal(yesArray[1], 1, 'invalid result');
+      assert.equal(yesArray[2], 1, 'invalid result');
       assert.equal(noArray[0], 1, 'invalid result');
       assert.equal(noArray[1], 2, 'invalid result');
+      assert.equal(noArray[2], 2, 'invalid result');
     });
 
     it('marks the correct participants', async () => {
@@ -78,6 +80,26 @@ contract('Survey', async (accounts) => {
       assert.isTrue(participantInfo2);
       assert.isTrue(participantInfo3);
       assert.isFalse(participantInfo4);
+    });
+
+    it('does not allow payout due to owner circuit breaker', async () => {
+      let stoppedValue;
+      stoppedValue = await contract.getStopped();
+      assert.isFalse(stoppedValue);
+
+      await contract.toggle_active();
+      stoppedValue = await contract.getStopped();
+      assert.isTrue(stoppedValue);
+
+      try {
+        const result = await contract.payoutParticipant({
+          from: sender,
+        });
+      } catch (error) {
+        assert(error);
+      }
+      // Reset back to stopped = false;
+      await contract.toggle_active();
     });
 
     it('does not payout due to invalid user', async () => {
