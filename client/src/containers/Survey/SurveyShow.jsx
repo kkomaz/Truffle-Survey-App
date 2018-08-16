@@ -173,6 +173,8 @@ class SurveyShow extends Component {
                       surveyContract={surveyContract}
                       accountId={accountId}
                       web3={web3}
+                      participantCount={participantCount}
+                      surveyRequiredCount={surveyRequiredCount}
                     />
                   )}
                   <p>Survey Address: {surveyId}</p>
