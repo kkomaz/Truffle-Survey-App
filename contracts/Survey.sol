@@ -275,7 +275,7 @@ contract Survey is usingOraclize, CircuitBreaker {
 
     /**
       * @dev Create question with two arg
-      * @param _ask Q1
+      * @param _ask1 Q1
       * @param _ask2 Q2
       * @return { bool } returns true if successful
       */
@@ -299,9 +299,9 @@ contract Survey is usingOraclize, CircuitBreaker {
 
     /**
       * @dev Create question with 3 arg
-      * @param _ask Q1
+      * @param _ask1 Q1
       * @param _ask2 Q2
-      * @param _ask2 Q3
+      * @param _ask3 Q3
       * @return { bool } returns true if successful
       */
     function createQuestion(string _ask1, string _ask2, string _ask3) isOwner public returns (bool) {
@@ -325,10 +325,10 @@ contract Survey is usingOraclize, CircuitBreaker {
 
     /**
       * @dev Create question with 4 arg
-      * @param _ask Q1
+      * @param _ask1 Q1
       * @param _ask2 Q2
-      * @param _ask2 Q3
-      * @param _ask2 Q4
+      * @param _ask3 Q3
+      * @param _ask4 Q4
       * @return { bool } returns true if successful
       */
     function createQuestion(string _ask1, string _ask2, string _ask3, string _ask4) isOwner public returns (bool) {
