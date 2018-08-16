@@ -83,7 +83,7 @@ class SurveyShowForm extends Component {
           map(questions, (q, index) => (
             <div className="row" key={index}>
               <div className="col-sm-12">
-                <p className="mb-quarter">{q}</p>
+                <p className="mt-half">{q}</p>
               </div>
 
               <div className="col-sm-12">

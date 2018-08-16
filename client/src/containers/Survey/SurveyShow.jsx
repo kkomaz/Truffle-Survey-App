@@ -10,6 +10,7 @@ import { createQuestionData } from 'utils/Survey/index';
 import SurveyShowButtons from './SurveyShowButtons';
 import SurveyShowForm from './SurveyShowForm';
 import SurveyShowDisplay from './SurveyShowDisplay';
+import SurveyShowDetails from './SurveyShowDetails';
 
 class SurveyShow extends Component {
   static propTypes = {
@@ -115,18 +116,6 @@ class SurveyShow extends Component {
       web3,
     } = this.props;
 
-    /* eslint-disable quote-props, quotes */
-    const data = [
-      { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-      { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-      { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-      { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-      { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-      { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-      { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-    ];
-    /* eslint-enable */
-
     if (isUndefined(questionCount)) {
       return (
         <div className="survey-show container">
@@ -185,37 +174,50 @@ class SurveyShow extends Component {
               <CardHeader title="Survey Information" />
               <CardContent>
                 <div className="survey-show__contract-details">
-                  {owner === accountId && (
-                    <SurveyShowButtons
-                      surveyId={surveyId}
-                      questionCount={questionCount}
-                      surveyContract={surveyContract}
-                      accountId={accountId}
-                      web3={web3}
-                      participantCount={participantCount}
-                      surveyRequiredCount={surveyRequiredCount}
-                    />
-                  )}
-                  <p>Survey Address: {surveyId}</p>
-                  {participantCount} / {surveyRequiredCount} surveys completed
-                  <p>{surveyContract.depositAmount} Ether deposited</p>
-                  <p>Current Balance in Contract: {surveyContract.balance} Ether</p>
-                  <p>Distribution Amount: {round((surveyContract.depositAmount / surveyRequiredCount), 2)} Ether</p>
-                  <p>Current Eth Price: ${round(surveyContract.ethPrice, 2)}</p>
-                  <BarChart
-                    width={300}
-                    height={350}
-                    data={rechartsQuestionData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="question" />
-                    <YAxis interval={1} />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="yes" fill="#8884d8" />
-                    <Bar dataKey="no" fill="#82ca9d" />
-                  </BarChart>
+                  <div className="row">
+                    <div className="col-xs-12">
+                      {owner === accountId && (
+                        <SurveyShowButtons
+                          surveyId={surveyId}
+                          questionCount={questionCount}
+                          surveyContract={surveyContract}
+                          accountId={accountId}
+                          web3={web3}
+                          participantCount={participantCount}
+                          surveyRequiredCount={surveyRequiredCount}
+                        />
+                      )}
+                    </div>
+
+                    <div className="col-xs-12">
+                      <p>Survey Address: {surveyId}</p>
+                    </div>
+
+                    <div className="col-xs-5">
+                      <SurveyShowDetails
+                        participantCount={participantCount}
+                        surveyRequiredCount={surveyRequiredCount}
+                        surveyContract={surveyContract}
+                      />
+                    </div>
+
+                    <div className="col-xs-7">
+                      <BarChart
+                        width={300}
+                        height={350}
+                        data={rechartsQuestionData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="question" />
+                        <YAxis interval={1} />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="yes" fill="#8884d8" />
+                        <Bar dataKey="no" fill="#82ca9d" />
+                      </BarChart>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
