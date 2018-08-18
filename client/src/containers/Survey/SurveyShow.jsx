@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardHeader, CardContent, CardLoader, CardMedia, Button } from 'components';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import classNames from 'classnames';
 import { withRouter } from 'react-router-dom';
-import { range, isUndefined, map } from 'lodash-es';
-import ipfs, { ipfsUpload } from 'utils/ipfs';
+import { range, isUndefined, map, isEmpty, isEqual } from 'lodash-es';
+import { ipfsUpload } from 'utils/ipfs';
 
 import convertToNumber from 'utils/convertToNumber';
 import { createQuestionData } from 'utils/Survey/index';
@@ -27,10 +28,12 @@ class SurveyShow extends Component {
     subheaderText: '',
     rechartsQuestionData: [],
     ipfsHeroImageUrl: 'https://imgplaceholder.com/420x320/cccccc/757575/glyphicon-file',
+    submittingipfs: false,
   };
 
   componentDidMount = async () => {
     const { surveyContract, accountId } = this.props;
+    const { ipfsHeroImageUrl } = this.state;
     let allQuestions = [];
     const questionCount = convertToNumber(
       await surveyContract.methods.getQuestionCount().call(),
@@ -41,7 +44,7 @@ class SurveyShow extends Component {
       .getParticipantCount()
       .call());
     const ipfsHash = await surveyContract.methods.getHashHeroImage().call();
-    const ipfsHeroImageUrl = `https://gateway.ipfs.io/ipfs/${ipfsHash}`;
+    const ipfsHashUrl = isEmpty(ipfsHash) ? ipfsHeroImageUrl : `https://gateway.ipfs.io/ipfs/${ipfsHash}`;
 
     if (questionCount === 0) {
       return this.setState({
@@ -49,7 +52,7 @@ class SurveyShow extends Component {
         owner,
         surveyRequiredCount,
         participantCount,
-        ipfsHeroImageUrl,
+        ipfsHeroImageUrl: ipfsHashUrl,
       });
     }
 
@@ -83,7 +86,7 @@ class SurveyShow extends Component {
       surveyRequiredCount,
       subheaderText: subheaderText(),
       rechartsQuestionData,
-      ipfsHeroImageUrl,
+      ipfsHeroImageUrl: ipfsHashUrl,
     });
   };
 
@@ -110,6 +113,8 @@ class SurveyShow extends Component {
     const { buffer } = this.state;
     const { surveyContract, accountId } = this.props;
 
+    this.setState({ submittingipfs: true });
+
     const ipfsHash = await ipfsUpload(buffer);
 
     this.setState({ ipfsHeroImageUrl: `https://gateway.ipfs.io/ipfs/${ipfsHash}` });
@@ -117,15 +122,20 @@ class SurveyShow extends Component {
     await surveyContract.methods.sendHashHeroImage(ipfsHash).send({
       from: accountId,
     });
+
+    this.setState({ submittingipfs: false });
   }
 
   captureFile = (event) => {
     event.stopPropagation();
     event.preventDefault();
     const file = event.target.files[0];
-    let reader = new window.FileReader(); /* eslint-disable-line */
-    reader.readAsArrayBuffer(file);
-    reader.onloadend = () => this.convertToBuffer(reader);
+
+    if (file) {
+      let reader = new window.FileReader(); /* eslint-disable-line */
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = () => this.convertToBuffer(reader);
+    }
   }
 
   convertToBuffer = async (reader) => {
@@ -146,6 +156,7 @@ class SurveyShow extends Component {
       subheaderText,
       rechartsQuestionData,
       ipfsHeroImageUrl,
+      submittingipfs,
     } = this.state;
 
     const {
@@ -154,6 +165,12 @@ class SurveyShow extends Component {
       surveyContract,
       web3,
     } = this.props;
+
+    const ipfsNotifierClass = () => classNames({
+      'survey-show__notifier-text': true,
+      hidden: !submittingipfs,
+      danger: submittingipfs,
+    });
 
     if (isUndefined(questionCount)) {
       return (
@@ -179,16 +196,25 @@ class SurveyShow extends Component {
                 />
               </CardMedia>
               <CardContent>
-                <form onSubmit={this.uploadFile}>
-                  <input type="file" onChange={this.captureFile} />
-                  <Button
-                    text="Upload File"
-                    color="primary"
-                    type="submit"
-                  >
-                    Send It
-                  </Button>
-                </form>
+                {
+                  isEqual(owner, accountId) &&
+                  <div className="survey-show__file-upload">
+                    <form onSubmit={this.uploadFile}>
+                      <input type="file" onChange={this.captureFile} />
+                      <Button
+                        text="Upload File"
+                        disabled={submittingipfs}
+                        color="primary"
+                        type="submit"
+                      >
+                        Send It
+                      </Button>
+                    </form>
+                    <p className={ipfsNotifierClass()}>
+                      Submitting file to ipfs... Please wait for metmask for transaction completion.
+                    </p>
+                  </div>
+                }
 
                 {
                   enrolled &&
