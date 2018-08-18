@@ -34,6 +34,9 @@ contract Survey is usingOraclize, CircuitBreaker {
     event LogPriceUpdated(string price);
     event LogNewOraclizeQuery(string description);
 
+    // IPFS
+    string public ipfsHashHeroImage;
+
     // Modifiers
     modifier surveyCompleted {
       require(participantCount == surveyRequiredCount);
@@ -175,6 +178,22 @@ contract Survey is usingOraclize, CircuitBreaker {
     }
 
     /**
+      * @dev Getter function
+      * @return { uint } returns the eth price
+      */
+    function getEthPrice() returns (string) {
+      return ETHUSD;
+    }
+
+    /**
+      * @dev Getter function
+      * @return { string } returns the string hash of ipfs
+      */
+    function getHashHeroImage() public view returns (string) {
+      return ipfsHashHeroImage;
+    }
+
+    /**
       * @dev allows the owner to deposit into the contract
       */
     function depositRewardAmount() public payable isOwner {
@@ -248,11 +267,12 @@ contract Survey is usingOraclize, CircuitBreaker {
     }
 
     /**
-      * @dev Getter function
-      * @return { uint } returns the eth price
+      * @dev save hash value returned from ipfs
+      * @return { bool } true if sucessful
       */
-    function getEthPrice() returns (string) {
-      return ETHUSD;
+    function sendHashHeroImage(string _hash) public returns (bool) {
+      ipfsHashHeroImage = _hash;
+      return true;
     }
 
     // Overloaded Functions

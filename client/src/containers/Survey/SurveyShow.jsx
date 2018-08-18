@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardHeader, CardContent, CardLoader, Button } from 'components';
+import { Card, CardHeader, CardContent, CardLoader, CardMedia, Button } from 'components';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { withRouter } from 'react-router-dom';
-import { range, isUndefined, map, round } from 'lodash-es';
+import { range, isUndefined, map } from 'lodash-es';
+import ipfs, { ipfsUpload } from 'utils/ipfs';
 
 import convertToNumber from 'utils/convertToNumber';
 import { createQuestionData } from 'utils/Survey/index';
@@ -21,7 +22,12 @@ class SurveyShow extends Component {
     history: PropTypes.object.isRequired,
   };
 
-  state = { questions: [], subheaderText: '', rechartsQuestionData: [] };
+  state = {
+    questions: [],
+    subheaderText: '',
+    rechartsQuestionData: [],
+    ipfsHeroImageUrl: 'https://imgplaceholder.com/420x320/cccccc/757575/glyphicon-file',
+  };
 
   componentDidMount = async () => {
     const { surveyContract, accountId } = this.props;
@@ -34,6 +40,8 @@ class SurveyShow extends Component {
     const participantCount = convertToNumber(await surveyContract.methods
       .getParticipantCount()
       .call());
+    const ipfsHash = await surveyContract.methods.getHashHeroImage().call();
+    const ipfsHeroImageUrl = `https://gateway.ipfs.io/ipfs/${ipfsHash}`;
 
     if (questionCount === 0) {
       return this.setState({
@@ -41,6 +49,7 @@ class SurveyShow extends Component {
         owner,
         surveyRequiredCount,
         participantCount,
+        ipfsHeroImageUrl,
       });
     }
 
@@ -74,6 +83,7 @@ class SurveyShow extends Component {
       surveyRequiredCount,
       subheaderText: subheaderText(),
       rechartsQuestionData,
+      ipfsHeroImageUrl,
     });
   };
 
@@ -95,6 +105,34 @@ class SurveyShow extends Component {
     }
   }
 
+  uploadFile = async (event) => {
+    event.preventDefault();
+    const { buffer } = this.state;
+    const { surveyContract, accountId } = this.props;
+
+    const ipfsHash = await ipfsUpload(buffer);
+
+    this.setState({ ipfsHeroImageUrl: `https://gateway.ipfs.io/ipfs/${ipfsHash}` });
+
+    await surveyContract.methods.sendHashHeroImage(ipfsHash).send({
+      from: accountId,
+    });
+  }
+
+  captureFile = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const file = event.target.files[0];
+    let reader = new window.FileReader(); /* eslint-disable-line */
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => this.convertToBuffer(reader);
+  }
+
+  convertToBuffer = async (reader) => {
+    const buffer = await Buffer.from(reader.result);
+    this.setState({ buffer });
+  };
+
   render() {
     const {
       questions,
@@ -107,6 +145,7 @@ class SurveyShow extends Component {
       surveyRequiredCount,
       subheaderText,
       rechartsQuestionData,
+      ipfsHeroImageUrl,
     } = this.state;
 
     const {
@@ -130,7 +169,27 @@ class SurveyShow extends Component {
           <div className="col-xs-12 col-sm-6">
             <Card>
               <CardHeader title="Survey Questions" subheader={subheaderText} />
+              <CardMedia
+                title="Contemplative Reptile"
+              >
+                <img
+                  alt="upload"
+                  src={ipfsHeroImageUrl}
+                  style={{ height: '300px', width: '100%' }}
+                />
+              </CardMedia>
               <CardContent>
+                <form onSubmit={this.uploadFile}>
+                  <input type="file" onChange={this.captureFile} />
+                  <Button
+                    text="Upload File"
+                    color="primary"
+                    type="submit"
+                  >
+                    Send It
+                  </Button>
+                </form>
+
                 {
                   enrolled &&
                   <Button
