@@ -35,10 +35,7 @@ class SurveyShowButtons extends Component {
   onSubmitFunds = async () => {
     const { surveyContract, accountId, web3 } = this.props;
     const { amount } = this.state;
-    const { BN } = web3.utils;
-
-    const etherAmount = new BN(amount);
-    const weiValue = web3.utils.toWei(etherAmount, 'ether');
+    const weiValue = web3.utils.toWei(amount, 'ether');
 
     await surveyContract.methods
       .depositRewardAmount()
