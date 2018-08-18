@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { withRouter } from 'react-router-dom';
 import { range, isUndefined, map, isEmpty, isEqual } from 'lodash-es';
 import { ipfsUpload } from 'utils/ipfs';
+import txMineCompleted from 'utils/txMineCompleted';
 
 import convertToNumber from 'utils/convertToNumber';
 import { createQuestionData } from 'utils/Survey/index';
@@ -111,7 +112,7 @@ class SurveyShow extends Component {
   uploadFile = async (event) => {
     event.preventDefault();
     const { buffer } = this.state;
-    const { surveyContract, accountId } = this.props;
+    const { surveyContract, accountId, web3 } = this.props;
 
     this.setState({ submittingipfs: true });
 
@@ -119,11 +120,15 @@ class SurveyShow extends Component {
 
     this.setState({ ipfsHeroImageUrl: `https://gateway.ipfs.io/ipfs/${ipfsHash}` });
 
-    await surveyContract.methods.sendHashHeroImage(ipfsHash).send({
+    const request = await surveyContract.methods.sendHashHeroImage(ipfsHash).send({
       from: accountId,
     });
 
-    this.setState({ submittingipfs: false });
+    const tx = request.transactionHash;
+
+    if (txMineCompleted(web3, tx)) {
+      this.setState({ submittingipfs: false });
+    }
   }
 
   captureFile = (event) => {
