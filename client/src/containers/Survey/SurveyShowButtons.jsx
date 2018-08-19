@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Button } from 'components';
 import TextField from '@material-ui/core/TextField';
 import setEthPrice from 'actions/Survey/setEthPrice';
+import txMineCompleted from 'utils/txMineCompleted';
 
 class SurveyShowButtons extends Component {
   static propTypes = {
@@ -37,18 +38,36 @@ class SurveyShowButtons extends Component {
     const { amount } = this.state;
     const weiValue = web3.utils.toWei(amount, 'ether');
 
-    await surveyContract.methods
+    const request = await surveyContract.methods
       .depositRewardAmount()
       .send({
         from: accountId,
         value: weiValue,
       });
 
-    const balance = await surveyContract.methods.getBalance().call();
+    console.log(request);
 
-    if (balance) {
-      window.location.reload(); // eslint-disable-line no-undef
+    if (request) {
+      let newAmount;
+      try {
+        newAmount = await surveyContract.methods.getDepositAmount().call({ from: accountId });
+      } catch (error) {
+        console.log(error.message);
+      }
+      console.log(newAmount);
     }
+
+    // return web3.eth.getTransactionReceiptMined(tx).then((receipt) => {
+    //   console.log(receipt);
+    //   window.location.reload(); // eslint-disable-line no-undef
+    // });
+
+    // if (txMineCompleted(web3, tx)) {
+    //   const balance = await surveyContract.methods.getBalance().call();
+    //   // if (balance) {
+    //   //   window.location.reload(); // eslint-disable-line no-undef
+    //   // }
+    // }
   }
 
   handleChange = amount => event => (

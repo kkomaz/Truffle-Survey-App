@@ -208,7 +208,7 @@ class SurveyShow extends Component {
                       <input type="file" onChange={this.captureFile} />
                       <Button
                         text="Upload File"
-                        disabled={submittingipfs}
+                        disabled={submittingipfs || surveyContract.balance <= 0}
                         color="primary"
                         type="submit"
                       >
