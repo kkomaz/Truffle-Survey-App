@@ -2,6 +2,8 @@ require('babel-register')({
   ignore: /node_modules\/(?!openzeppelin-solidity\/test\/helpers)/
 })
 require('babel-polyfill')
+var HDWalletProvider = require("truffle-hdwallet-provider");
+var envConfig = require('./env.config.js');
 
 // See <http://truffleframework.com/docs/advanced/configuration>
 // to customize your Truffle configuration!
@@ -12,7 +14,13 @@ module.exports = {
       port: 8545,
       network_id: '*', // Match any network id
       gas: 4600000
-    }
+    },
+    rinkeby: {
+      provider: () => new HDWalletProvider(envConfig.SECRET_KEY, envConfig.NETWORK_KEY),
+      network_id: 4,
+      gas: 3000000,
+      gasPrice: 21
+    },
   },
   solc: {
     // Turns on the Solidity optimizer. For development the optimizer's
