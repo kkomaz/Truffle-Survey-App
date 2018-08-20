@@ -22,7 +22,11 @@ npm install
 npm install
 ```
 
-## Survey Dapp Image
+## Overview
+1. This is Survey dapp idea where a user can create a survey with questions.  To get feedback he must deposit some funds and create questions.
+2. Once questions are created, participants are allowed to answer the questions.
+3. Once the survey is over, particpants are allowed to retrieve the fund.
+
 ![alt text](https://i.imgur.com/Cwse6zy.png)
 
 ## Testing
@@ -81,9 +85,27 @@ npm run start
 5. Browser should be running on localhost:3000
 
 ## Rinkeby Network
-1. Switch metamask to Rinkeby network should automatically work via Metamask
+1. Switch metamask to Rinkeby network should work via Metamask
 2. Already deployed the rinkeby Survey Factory contract.  Address is 0x7e57b583ee65a423455aedfcd870d55b2a1150e9
-3. Defined in the `client/src/utils/constants.js` file.
+3. Set the rinkeby address below.  (will work if you have the address defined in the build folder)
+
+```
+// getContractInsance.js
+
+const getContractInstance = async (web3, contractDefinition) => {
+  // get network ID and the deployed address
+  const networkId = await web3.eth.net.getId();
+
+  const deployedAddress = '0x7e57b583ee65a423455aedfcd870d55b2a1150e9';
+
+  // create the instance
+  const instance = new web3.eth.Contract(contractDefinition.abi, deployedAddress);
+
+  return instance;
+};
+
+export default getContractInstance;
+```
 
 ## Design Patterns // Security
 
@@ -156,10 +178,11 @@ function depositRewardAmount() public payable isOwner {
 }
 ```
 
-### Libraries
+## Libraries
 Link: https://github.com/oraclize/oraclize-lib
 
 - Using the library oraclize to generate the current Ethereum price via GDAX API.
+- Things to note, this does not work on Rinkeby network.  It works locally if method above is done in the compile/migration step.
 
 #### Code
 
