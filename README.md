@@ -79,6 +79,8 @@ npm run start
 
 ## Rinkeby Network
 1. Switch metamask to Rinkeby network should automatically work via Metamask
+2. Already deployed the rinkeby Survey Factory contract.  Address is 0x7e57b583ee65a423455aedfcd870d55b2a1150e9
+3. Defined in the `client/src/utils/constants.js` file.
 
 ## Design Patterns // Security
 
