@@ -21,6 +21,7 @@ class SurveyQuestions extends Component {
     return (
       <div className="survey-questions">
         <div className="survey-questions__buttons">
+          <p>Make sure you only ask yes/no questions</p>
           <Button
             text="Add Question"
             color="primary"

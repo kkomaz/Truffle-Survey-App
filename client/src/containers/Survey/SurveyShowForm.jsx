@@ -60,6 +60,10 @@ class SurveyShowForm extends Component {
     }
   }
 
+  goBack = () => {
+    this.props.history.goBack();
+  }
+
   render() {
     const {
       questions,
@@ -107,7 +111,7 @@ class SurveyShowForm extends Component {
               reset={reset}
               pristine={pristine}
               submitting={submitting}
-              onCancelClick={() => console.log('something')}
+              onCancelClick={this.goBack}
             />
           </div>
         </div>

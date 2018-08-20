@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map } from 'lodash-es';
+import InboxIcon from '@material-ui/icons/Inbox';
+import { withRouter } from 'react-router-dom';
 import {
   BarLoader,
   Button,
@@ -13,12 +15,12 @@ import {
   CardHeader,
   CardContent,
 } from 'components';
-import InboxIcon from '@material-ui/icons/Inbox';
-import { withRouter } from 'react-router-dom';
+import {
+  getSurveys,
+  createSurvey,
+} from 'actions/Survey';
 import notifier from 'components/Display/Notifier';
-import setContractInstance from '../../actions/Contract/setContractInstance';
-import getSurveys from '../../actions/Survey/getSurveys';
-import createSurvey from '../../actions/Survey/createSurvey';
+import setContractInstance from 'actions/Contract/setContractInstance';
 
 class Surveys extends Component {
   static propTypes = {
@@ -55,7 +57,7 @@ class Surveys extends Component {
     try {
       const result = await this.props.createSurvey(surveyFactoryContract, web3, accountId);
 
-      if (result.success) {
+      if (result.address) {
         this.props.history.push(`/surveys/${result.address}/show`);
       }
     } catch (error) {
