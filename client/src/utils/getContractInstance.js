@@ -8,7 +8,6 @@ const getContractInstance = async (web3, contractDefinition) => {
 
   switch (networkType) {
     case 'rinkeby': {
-      console.log('hitting here');
       deployedAddress = rinkebySurveyFactoryAddress;
       break;
     }
