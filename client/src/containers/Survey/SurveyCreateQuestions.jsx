@@ -4,7 +4,6 @@ import { FieldArray, reduxForm } from 'redux-form';
 import { Card, CardContent, CardHeader, SubmissionButtons, BarLoader } from 'components';
 import notifier from 'components/Display/Notifier';
 import { withRouter } from 'react-router-dom';
-import convertToNumber from 'utils/convertToNumber';
 import SurveyQuestions from './SurveyQuestions';
 
 class CreateSurveyQuestions extends Component {
@@ -23,7 +22,7 @@ class CreateSurveyQuestions extends Component {
   state = { confirming: false };
 
   onSubmit = async (values) => {
-    const { surveyContract, accountId } = this.props;
+    const { surveyContract, accountId, surveyId } = this.props;
     const { questions } = values;
 
     try {
@@ -32,7 +31,7 @@ class CreateSurveyQuestions extends Component {
         .send({
           from: accountId,
         });
-      this.navigateAway();
+      this.props.history.push(`/surveys/${surveyId}/show`);
     } catch (error) {
       this.props.generate('danger', error.message);
     }
@@ -41,22 +40,6 @@ class CreateSurveyQuestions extends Component {
   onCancelClick = () => {
     this.props.history.goBack();
   };
-
-  // Hack to check if count has updated
-  navigateAway = async () => {
-    this.setState({ confirming: true });
-    const { surveyContract, surveyId } = this.props;
-
-    const questionCount = convertToNumber(await surveyContract.methods.getQuestionCount().call());
-
-    if (questionCount === 0) {
-      setTimeout(this.navigateAway, 5000);
-    } else {
-      this.setState({ confirming: false }, () => {
-        this.props.history.push(`/surveys/${surveyId}/show`);
-      });
-    }
-  }
 
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
