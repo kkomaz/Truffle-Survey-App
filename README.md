@@ -22,6 +22,9 @@ npm install
 npm install
 ```
 
+## Survey Dapp Image
+![alt text](https://i.imgur.com/Cwse6zy.png)
+
 ## Testing
 **NOTE:** Make sure you do not have a open build folder generated.  During testing, a build folder will be created as a reference to your contracts.  Delete if necessary.
 1. Run the development console
