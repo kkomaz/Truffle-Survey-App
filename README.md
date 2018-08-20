@@ -77,6 +77,9 @@ npm run start
 
 5. Browser should be running on localhost:3000
 
+## Rinkeby Network
+1. Switch metamask to Rinkeby network should automatically work via Metamask
+
 ## Design Patterns // Security
 
 ### Favor pull over push for external calls
