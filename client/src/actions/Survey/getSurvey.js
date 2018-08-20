@@ -1,8 +1,8 @@
 import { GET_SURVEY } from '../constants';
 import Survey from '../../utils/survey';
 
-const getSurvey = (address, web3) => {
-  return async (dispatch) => {
+const getSurvey = (address, web3) => (
+  async (dispatch) => {
     try {
       const result = await Survey(address, web3);
 
@@ -19,7 +19,7 @@ const getSurvey = (address, web3) => {
     } catch (error) {
       throw error;
     }
-  };
-};
+  }
+);
 
 export default getSurvey;

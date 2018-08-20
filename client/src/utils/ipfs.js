@@ -12,7 +12,7 @@ export function ipfsUpload(buffer) {
   return new Promise((resolve, reject) => {
     ipfs.add(buffer, (err, ipfsHash) => {
       if (err) {
-        console.log(err);
+        console.log(err); /* eslint-disable-line */
         reject(err);
       } else {
         const { hash } = ipfsHash[0];

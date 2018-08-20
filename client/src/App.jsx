@@ -7,6 +7,7 @@ import {
   Switch,
   BrowserRouter,
 } from 'react-router-dom';
+import notifier from 'components/Display/Notifier';
 import Typography from '@material-ui/core/Typography';
 import { AppBar } from 'components';
 import setWeb3 from './actions/Web3/setWeb3';
@@ -31,15 +32,19 @@ class App extends Component {
     setWeb3: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
     accountId: PropTypes.string,
+    generate: PropTypes.func.isRequired,
   };
 
   state = { loading: true };
 
   componentDidMount = async () => {
-    const result = await this.props.setWeb3();
-
-    if (result) {
-      this.setState({ loading: false });
+    try {
+      const result = await this.props.setWeb3();
+      if (result) {
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      this.props.generate('danger', error.message);
     }
   };
 
@@ -96,4 +101,4 @@ export default connect(
   {
     setWeb3,
   },
-)(App);
+)(notifier(App));

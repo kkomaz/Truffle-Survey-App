@@ -1,8 +1,8 @@
 import { SET_WEB3 } from '../constants';
 import getWeb3 from '../../utils/getWeb3';
 
-const setWeb3 = () => {
-  return async (dispatch) => {
+const setWeb3 = () => (
+  async (dispatch) => {
     try {
       const web3 = await getWeb3();
       const accounts = await web3.eth.getAccounts();
@@ -15,9 +15,9 @@ const setWeb3 = () => {
 
       return web3;
     } catch (error) {
-      return console.log(error);
+      throw error;
     }
-  };
-};
+  }
+);
 
 export default setWeb3;

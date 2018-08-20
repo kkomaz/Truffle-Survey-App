@@ -14,14 +14,12 @@ const styles = {
   },
 };
 
-const CardHeaderUI = (props) => {
-  return (
-    <CardHeader
-      classes={{ ...props.classes }}
-      {...props}
-    />
-  );
-};
+const CardHeaderUI = props => (
+  <CardHeader
+    classes={{ ...props.classes }}
+    {...props}
+  />
+);
 
 CardHeaderUI.propTypes = {
   classes: PropTypes.object.isRequired,

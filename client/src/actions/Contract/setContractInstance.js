@@ -1,7 +1,7 @@
 import getContractInstance from '../../utils/getContractInstance';
 
-const setContractInstance = (web3, contractDefinition, action) => {
-  return async (dispatch) => {
+const setContractInstance = (web3, contractDefinition, action) => (
+  async (dispatch) => {
     try {
       const contract = await getContractInstance(web3, contractDefinition);
 
@@ -18,7 +18,7 @@ const setContractInstance = (web3, contractDefinition, action) => {
         error,
       };
     }
-  };
-};
+  }
+);
 
 export default setContractInstance;

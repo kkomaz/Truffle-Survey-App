@@ -1,7 +1,7 @@
 import { GET_SURVEYS } from '../constants';
 
-const getSurveys = (contract, accountId) => {
-  return async (dispatch) => {
+const getSurveys = (contract, accountId) => (
+  async (dispatch) => {
     try {
       const payload = await contract.methods.getDeployedSurveys().call({ from: accountId });
 
@@ -14,7 +14,7 @@ const getSurveys = (contract, accountId) => {
     } catch (error) {
       return { error };
     }
-  };
-};
+  }
+);
 
 export default getSurveys;

@@ -6,6 +6,7 @@ import { SubmissionButtons, Select, BarLoader } from 'components';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import { withRouter } from 'react-router-dom';
+import notifier from 'components/Display/Notifier';
 
 class SurveyShowForm extends Component {
   static propTypes = {
@@ -17,6 +18,7 @@ class SurveyShowForm extends Component {
     accountId: PropTypes.string.isRequired,
     surveyContract: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    generate: PropTypes.func.isRequired,
   };
 
   state = {
@@ -37,26 +39,15 @@ class SurveyShowForm extends Component {
       return false;
     });
 
-    await surveyContract.methods
-      .giveAnswers(results)
-      .send({
-        from: accountId,
-      });
-
-    this.navigateAway();
-  }
-
-  navigateAway = async () => {
-    this.setState({ confirming: true });
-    const { surveyContract, accountId } = this.props;
-
-    const result = await surveyContract.methods
-      .getParticipant(accountId).call();
-
-    if (result) {
+    try {
+      await surveyContract.methods
+        .giveAnswers(results)
+        .send({
+          from: accountId,
+        });
       this.props.history.push('/surveys');
-    } else {
-      setTimeout(this.navigateAway, 5000);
+    } catch (error) {
+      this.props.generate('danger', error.message);
     }
   }
 
@@ -122,4 +113,4 @@ class SurveyShowForm extends Component {
 
 export default reduxForm({
   form: 'SurveyShowForm', // a unique identifier for this form
-})(withRouter(SurveyShowForm));
+})(withRouter(notifier(SurveyShowForm)));
