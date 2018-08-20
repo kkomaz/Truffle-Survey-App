@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { Button } from 'components';
 import TextField from '@material-ui/core/TextField';
 import setEthPrice from 'actions/Survey/setEthPrice';
-import txMineCompleted from 'utils/txMineCompleted';
+import depositRewardAmount from 'actions/Survey/depositRewardAmount';
+import notifier from 'components/Display/Notifier';
 
 class SurveyShowButtons extends Component {
   static propTypes = {
@@ -18,6 +19,8 @@ class SurveyShowButtons extends Component {
     setEthPrice: PropTypes.func.isRequired,
     surveyRequiredCount: PropTypes.number.isRequired,
     participantCount: PropTypes.number.isRequired,
+    depositRewardAmount: PropTypes.func.isRequired,
+    generate: PropTypes.func.isRequired,
   }
 
   state = { amount: '', showFundInput: false };
@@ -34,40 +37,17 @@ class SurveyShowButtons extends Component {
   }
 
   onSubmitFunds = async () => {
-    const { surveyContract, accountId, web3 } = this.props;
+    const { surveyContract, accountId, web3, surveyId } = this.props;
     const { amount } = this.state;
-    const weiValue = web3.utils.toWei(amount, 'ether');
 
-    const request = await surveyContract.methods
-      .depositRewardAmount()
-      .send({
-        from: accountId,
-        value: weiValue,
-      });
+    try {
+      await this.props.depositRewardAmount(surveyContract, web3, surveyId, accountId, amount);
 
-    console.log(request);
-
-    if (request) {
-      let newAmount;
-      try {
-        newAmount = await surveyContract.methods.getDepositAmount().call({ from: accountId });
-      } catch (error) {
-        console.log(error.message);
-      }
-      console.log(newAmount);
+      this.props.generate('success', 'Deposit Successful');
+      this.setState({ amount: '' });
+    } catch (error) {
+      this.props.generate('danger', error.message);
     }
-
-    // return web3.eth.getTransactionReceiptMined(tx).then((receipt) => {
-    //   console.log(receipt);
-    //   window.location.reload(); // eslint-disable-line no-undef
-    // });
-
-    // if (txMineCompleted(web3, tx)) {
-    //   const balance = await surveyContract.methods.getBalance().call();
-    //   // if (balance) {
-    //   //   window.location.reload(); // eslint-disable-line no-undef
-    //   // }
-    // }
   }
 
   handleChange = amount => event => (
@@ -145,4 +125,5 @@ class SurveyShowButtons extends Component {
 
 export default connect(null, {
   setEthPrice,
-})(withRouter(SurveyShowButtons));
+  depositRewardAmount,
+})(withRouter(notifier(SurveyShowButtons)));

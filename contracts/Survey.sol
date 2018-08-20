@@ -27,6 +27,7 @@ contract Survey is usingOraclize, CircuitBreaker {
     uint public participantCount;
     uint public distributeAmount;
     uint public depositAmount;
+    event LogDepositAmountUpdated(uint depositAmount);
 
     // Oraclize Parameters
     string public ETHUSD;
@@ -201,6 +202,7 @@ contract Survey is usingOraclize, CircuitBreaker {
 
         depositAmount += msg.value;
         distributeAmount = depositAmount / surveyRequiredCount;
+        emit LogDepositAmountUpdated(depositAmount);
     }
 
     /**

@@ -7,6 +7,7 @@ import {
   GET_SURVEY_DEPOSIT_AMOUNT,
   GET_ETH_PRICE,
   SET_ETH_PRICE,
+  DEPOSIT_SURVEY_AMOUNT,
 } from '../actions/constants';
 
 const defaultState = {
@@ -31,7 +32,8 @@ export default function surveyReducer(state = defaultState, action) {
     case GET_SURVEY_BALANCE: {
       return { ...state, [action.address]: { ...state[action.address], balance: payload } };
     }
-    case GET_SURVEY_DEPOSIT_AMOUNT: {
+    case GET_SURVEY_DEPOSIT_AMOUNT:
+    case DEPOSIT_SURVEY_AMOUNT: {
       return { ...state, [action.address]: { ...state[action.address], depositAmount: payload } };
     }
     case GET_ETH_PRICE:

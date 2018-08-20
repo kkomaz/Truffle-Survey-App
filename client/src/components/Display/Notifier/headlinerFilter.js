@@ -10,7 +10,7 @@ const headlinerFilter = (type) => {
       return '';
     }
     default: {
-      return 'Sucess!';
+      return 'Success!';
     }
   }
 };

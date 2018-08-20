@@ -1,11 +1,11 @@
+import getValueInEther from 'utils/getValueInEther';
 import { GET_SURVEY_DEPOSIT_AMOUNT } from '../constants';
 
 const getSurveyDepositAmount = (surveyContract, web3, surveyId) => (
   async (dispatch) => {
     try {
       const balanceInWei = await surveyContract.methods.getDepositAmount().call();
-      const balanceInEther = parseFloat(web3.utils.fromWei(balanceInWei, 'ether')).toFixed(2);
-      const balance = parseFloat(balanceInEther);
+      const balance = getValueInEther(balanceInWei, web3);
 
       dispatch({
         type: GET_SURVEY_DEPOSIT_AMOUNT,
