@@ -16,10 +16,10 @@ module.exports = {
       gas: 4600000
     },
     rinkeby: {
-      provider: () => new HDWalletProvider(envConfig.SECRET_KEY, envConfig.NETWORK_KEY),
-      network_id: 4,
-      gas: 3000000,
-      gasPrice: 21
+      provider: new HDWalletProvider(envConfig.SECRET_KEY, envConfig.NETWORK_KEY),
+      network_id: '*',
+      gas: 4500000,
+      gasPrice: 25000000000
     },
   },
   solc: {
