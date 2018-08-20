@@ -73,8 +73,8 @@ ganache-cli
 
 3. Compile and migrate the smart contracts
 ```
-compile
-migrate
+truffle compile
+truffle migrate
 ```
 
 4. Go into your client directory and run the command below

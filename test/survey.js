@@ -9,6 +9,7 @@ contract('Survey', async (accounts) => {
     var sender2 = accounts[2];
     var sender3 = accounts[3];
     var sender4 = accounts[4];
+    var sender5 = accounts[5];
 
     before(function() {
       return Survey.new(owner, { from: owner })
@@ -50,6 +51,9 @@ contract('Survey', async (accounts) => {
       await contract.giveAnswers([false, false, false], {
         from: sender3
       });
+      await contract.giveAnswers([false, false, false], {
+        from: sender4
+      });
 
       const remainingSurveyCount = await contract.getRemainingSurveyCount();
       assert.equal(remainingSurveyCount.c[0], 0, 'Survey should be completed');
@@ -65,9 +69,9 @@ contract('Survey', async (accounts) => {
       assert.equal(yesArray[0], 2, 'invalid result');
       assert.equal(yesArray[1], 1, 'invalid result');
       assert.equal(yesArray[2], 1, 'invalid result');
-      assert.equal(noArray[0], 1, 'invalid result');
-      assert.equal(noArray[1], 2, 'invalid result');
-      assert.equal(noArray[2], 2, 'invalid result');
+      assert.equal(noArray[0], 2, 'invalid result');
+      assert.equal(noArray[1], 3, 'invalid result');
+      assert.equal(noArray[2], 3, 'invalid result');
     });
 
     it('marks the correct participants', async () => {
@@ -75,11 +79,13 @@ contract('Survey', async (accounts) => {
       const participantInfo2 = await contract.getParticipant(sender2);
       const participantInfo3 = await contract.getParticipant(sender3);
       const participantInfo4 = await contract.getParticipant(sender4);
+      const participantInfo5 = await contract.getParticipant(sender5);
 
       assert.isTrue(participantInfo);
       assert.isTrue(participantInfo2);
       assert.isTrue(participantInfo3);
-      assert.isFalse(participantInfo4);
+      assert.isTrue(participantInfo4);
+      assert.isFalse(participantInfo5);
     });
 
     it('does not allow payout due to owner circuit breaker', async () => {
