@@ -66,7 +66,7 @@ rm -rf tingodb
 
 1. Make sure you do not have a build folder (possibly existing from testing)
 
-2. Run your ganache server, if you're using the `ganache-cli` run the command and hook up to metamask manually.
+2. Run your ganache server, if you're using the `ganache-cli` run the command and hook up to metamask manually.  Locally please run on 8545.
 ```
 ganache-cli
 ```
